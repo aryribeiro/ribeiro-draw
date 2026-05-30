@@ -1,0 +1,412 @@
+// AWS Icon Panel — Modern dark glassmorphism design
+// Palette: #FF9900 (AWS orange), #232F3E (navy), glassmorphism dark
+
+.excalidraw {
+  --aws-orange: #ff9900;
+  --aws-orange-dim: rgba(255, 153, 0, 0.1);
+  --aws-orange-glow: rgba(255, 153, 0, 0.25);
+  --aws-navy: #232f3e;
+  --aws-dark: #0d1117;
+  --aws-surface: #161b22;
+  --aws-surface-hover: #1c2333;
+  --aws-surface-active: #22293a;
+  --aws-border: rgba(255, 255, 255, 0.06);
+  --aws-border-hover: rgba(255, 153, 0, 0.3);
+  --aws-text: #e6edf3;
+  --aws-text-muted: #7d8590;
+  --aws-radius: 10px;
+  --aws-radius-sm: 6px;
+  --aws-transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .aws-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--aws-dark);
+    color: var(--aws-text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow: hidden;
+
+    // ── Header ─────────────────────────────────────────────────────────────
+    &__header {
+      padding: 14px 16px 12px;
+      background: linear-gradient(180deg, rgba(255, 153, 0, 0.06) 0%, transparent 100%);
+      border-bottom: 1px solid var(--aws-border);
+      flex-shrink: 0;
+    }
+
+    &__title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &__title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--aws-text);
+    }
+
+    &__badge {
+      margin-left: auto;
+      background: var(--aws-orange-dim);
+      color: var(--aws-orange);
+      border: 1px solid var(--aws-orange-glow);
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 10.5px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    // ── Search ─────────────────────────────────────────────────────────────
+    &__search-wrap {
+      position: relative;
+      padding: 8px 12px;
+      flex-shrink: 0;
+    }
+
+    &__search {
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--aws-surface);
+      border: 1px solid var(--aws-border);
+      border-radius: var(--aws-radius);
+      color: var(--aws-text);
+      font-size: 12.5px;
+      padding: 9px 32px 9px 12px;
+      outline: none;
+      transition: border-color var(--aws-transition), box-shadow var(--aws-transition);
+
+      &::placeholder {
+        color: var(--aws-text-muted);
+      }
+
+      &:focus {
+        border-color: var(--aws-orange);
+        box-shadow: 0 0 0 3px var(--aws-orange-dim), 0 0 16px var(--aws-orange-dim);
+      }
+    }
+
+    &__search-clear {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--aws-surface-hover);
+      border: none;
+      color: var(--aws-text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      padding: 2px 5px;
+      border-radius: 4px;
+
+      &:hover {
+        color: var(--aws-text);
+        background: var(--aws-surface-active);
+      }
+    }
+
+    // ── Set tabs ───────────────────────────────────────────────────────────
+    &__set-tabs {
+      display: flex;
+      gap: 2px;
+      padding: 0 12px 8px;
+      flex-shrink: 0;
+
+      &.hidden {
+        display: none;
+      }
+    }
+
+    &__set-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 8px 4px;
+      background: var(--aws-surface);
+      border: 1px solid var(--aws-border);
+      border-radius: var(--aws-radius-sm);
+      color: var(--aws-text-muted);
+      cursor: pointer;
+      transition: all var(--aws-transition);
+
+      &:hover {
+        background: var(--aws-surface-hover);
+        border-color: var(--aws-border-hover);
+        color: var(--aws-text);
+      }
+
+      &.active {
+        background: var(--aws-orange-dim);
+        border-color: var(--aws-orange);
+        color: var(--aws-orange);
+      }
+
+      &-label {
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      &-count {
+        font-size: 10px;
+        font-weight: 500;
+        opacity: 0.7;
+        font-variant-numeric: tabular-nums;
+      }
+    }
+
+    // ── Category chips ─────────────────────────────────────────────────────
+    &__cats {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 4px;
+      padding: 0 12px 8px;
+      flex-shrink: 0;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    &__cat-chip {
+      flex-shrink: 0;
+      background: var(--aws-surface);
+      border: 1px solid var(--aws-border);
+      border-radius: 20px;
+      color: var(--aws-text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all var(--aws-transition);
+      white-space: nowrap;
+
+      &:hover {
+        border-color: var(--aws-border-hover);
+        color: var(--aws-text);
+        background: var(--aws-surface-hover);
+      }
+
+      &.active {
+        background: var(--aws-orange-dim);
+        border-color: var(--aws-orange);
+        color: var(--aws-orange);
+        font-weight: 600;
+      }
+    }
+
+    // ── Status bar ─────────────────────────────────────────────────────────
+    &__status {
+      padding: 2px 14px 6px;
+      font-size: 11.5px;
+      color: var(--aws-text-muted);
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    // ── Grid wrap (scrollable) ─────────────────────────────────────────────
+    &__grid-wrap {
+      flex: 1 1 0;
+      overflow-y: auto;
+      padding: 0 8px 8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+      }
+    }
+
+    // ── Group ──────────────────────────────────────────────────────────────
+    &__group {
+      margin-bottom: 12px;
+    }
+
+    &__group-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px 8px;
+      background: var(--aws-surface);
+      border: 1px solid var(--aws-border);
+      border-radius: var(--aws-radius-sm);
+      cursor: pointer;
+      transition: all var(--aws-transition);
+      margin-bottom: 6px;
+
+      &:hover {
+        background: var(--aws-surface-hover);
+        border-color: var(--aws-border-hover);
+      }
+    }
+
+    &__group-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--aws-text);
+      letter-spacing: -0.01em;
+    }
+
+    &__group-count {
+      margin-left: auto;
+      font-size: 10px;
+      color: var(--aws-text-muted);
+      background: var(--aws-dark);
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    &__group-arrow {
+      color: var(--aws-text-muted);
+      font-size: 14px;
+      font-weight: 300;
+      transition: transform var(--aws-transition);
+    }
+
+    &__group-header:hover &__group-arrow {
+      transform: translateX(2px);
+      color: var(--aws-orange);
+    }
+
+    // ── Virtual grid container ───────────────────────────────────────────────
+    &__virtual-grid {
+      position: relative;
+      width: 100%;
+    }
+
+    // ── Grid (non-virtualized fallback) ──────────────────────────────────────
+    &__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 4px;
+    }
+
+    // ── Icon card ──────────────────────────────────────────────────────────
+    &__icon-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 4px 6px;
+      background: var(--aws-surface);
+      border: 1px solid var(--aws-border);
+      border-radius: var(--aws-radius-sm);
+      cursor: pointer;
+      transition: all var(--aws-transition);
+      text-align: center;
+      min-width: 0;
+      position: relative;
+
+      &:hover {
+        background: var(--aws-surface-hover);
+        border-color: var(--aws-orange);
+        box-shadow:
+          0 0 12px var(--aws-orange-dim),
+          0 4px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-1px);
+
+        .aws-panel__icon-img {
+          transform: scale(1.1);
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+    }
+
+    &__icon-img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      pointer-events: none;
+      transition: transform var(--aws-transition);
+    }
+
+    &__icon-name {
+      font-size: 11px;
+      color: var(--aws-text-muted);
+      line-height: 1.3;
+      word-break: break-word;
+      max-width: 100%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    // ── More button ────────────────────────────────────────────────────────
+    &__more-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 4px;
+      background: transparent;
+      border: 1px dashed var(--aws-border);
+      border-radius: var(--aws-radius-sm);
+      color: var(--aws-orange);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--aws-transition);
+      min-height: 60px;
+
+      &:hover {
+        border-color: var(--aws-orange);
+        background: var(--aws-orange-dim);
+      }
+    }
+
+    // ── Empty state ────────────────────────────────────────────────────────
+    &__empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px;
+      gap: 12px;
+      color: var(--aws-text-muted);
+      text-align: center;
+
+      &-icon {
+        opacity: 0.3;
+      }
+
+      p {
+        margin: 0;
+        font-size: 13px;
+      }
+    }
+
+    // ── Footer ─────────────────────────────────────────────────────────────
+    &__footer {
+      padding: 8px 14px;
+      font-size: 11.5px;
+      color: var(--aws-text-muted);
+      text-align: center;
+      border-top: 1px solid var(--aws-border);
+      background: var(--aws-surface);
+      flex-shrink: 0;
+    }
+  }
+}

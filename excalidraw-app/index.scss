@@ -1,0 +1,167 @@
+@import "../packages/excalidraw/css/variables.module.scss";
+
+// ─── Ribeiro Draw! — AWS Theme ────────────────────────────────────────────────
+:root {
+  --rd-orange: #ff9900;
+  --rd-orange-dim: rgba(255, 153, 0, 0.12);
+  --rd-orange-glow: rgba(255, 153, 0, 0.3);
+  --rd-navy: #232f3e;
+  --rd-dark: #161b22;
+}
+
+// Apply Inter font globally to the app
+body,
+.excalidraw {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+// ─── AWS accent on primary color (dark mode) ──────────────────────────────────
+.excalidraw.theme--dark {
+  --color-primary: #ff9900;
+  --color-primary-darker: #e68a00;
+  --color-primary-darkest: #cc7a00;
+  --color-primary-light: rgba(255, 153, 0, 0.15);
+}
+
+// ─── Sidebar AWS tab icon pulse on hover ──────────────────────────────────────
+.excalidraw {
+  .sidebar-trigger [aria-label="AWS Icons"] svg,
+  .sidebar-tab-trigger svg {
+    transition: filter 0.2s ease, transform 0.15s ease;
+  }
+
+  .sidebar-trigger:hover [aria-label="AWS Icons"] svg,
+  .sidebar-tab-trigger:hover svg {
+    filter: drop-shadow(0 0 6px rgba(255, 153, 0, 0.7));
+    transform: scale(1.08);
+  }
+}
+
+.excalidraw {
+  --color-primary-contrast-offset: #625ee0; // to offset Chubb illusion
+
+  &.theme--dark {
+    --color-primary-contrast-offset: #726dff; // to offset Chubb illusion
+  }
+
+  .footer-center {
+    justify-content: flex-end;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-inline-start: auto;
+  }
+
+  .encrypted-icon {
+    border-radius: var(--space-factor);
+    color: var(--color-primary);
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-inline-start: auto;
+    margin-inline-end: 0.6em;
+    z-index: var(--zIndex-layerUI);
+
+    svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+
+  .dropdown-menu-container {
+    .dropdown-menu-item {
+      &.active-collab {
+        background-color: #ecfdf5;
+        color: #064e3c;
+      }
+      &.highlighted {
+        color: var(--color-promo);
+        font-weight: 700;
+        .dropdown-menu-item__icon g {
+          stroke-width: 2;
+        }
+      }
+    }
+  }
+
+  &.theme--dark {
+    .dropdown-menu-item {
+      &.active-collab {
+        background-color: #064e3c;
+        color: #ecfdf5;
+      }
+    }
+  }
+
+  .alert {
+    pointer-events: none;
+    position: absolute;
+    top: 6.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    text-align: center;
+    line-height: 1.5;
+    border-radius: var(--border-radius-md);
+    z-index: 6;
+    white-space: pre;
+
+    &--warning {
+      background-color: var(--color-warning);
+      color: var(--color-text-warning);
+    }
+
+    &--danger {
+      background-color: var(--color-danger-dark);
+      color: var(--color-danger-text);
+    }
+  }
+}
+
+.excalidraw-app.is-collaborating {
+  [data-testid="clear-canvas-button"] {
+    display: none;
+  }
+}
+
+.plus-banner {
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  align-items: center;
+  border: 1px solid var(--color-primary);
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--border-radius-lg);
+  background-color: var(--island-bg-color);
+  text-decoration: none !important;
+
+  font-family: var(--ui-font);
+  font-size: 0.8333rem;
+  box-sizing: border-box;
+  height: var(--lg-button-size);
+
+  border: none;
+  box-shadow: 0 0 0 1px var(--color-surface-lowest);
+  background-color: var(--color-surface-low);
+  color: var(--button-color, var(--color-on-surface)) !important;
+
+  &:active {
+    box-shadow: 0 0 0 1px var(--color-brand-active);
+  }
+
+  &:hover {
+    background-color: var(--color-primary);
+    color: white !important;
+  }
+
+  &:active {
+    background-color: var(--color-primary-darker);
+  }
+}
+
+.theme--dark {
+  .plus-banner {
+    &:hover {
+      color: black !important;
+    }
+  }
+}

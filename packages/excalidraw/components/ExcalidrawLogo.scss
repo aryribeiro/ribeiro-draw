@@ -1,0 +1,53 @@
+.excalidraw {
+  .ExcalidrawLogo {
+    --logo-icon--mobile: 1.5rem;
+    --logo-icon--xs: 2rem;
+    --logo-icon--small: 2.5rem;
+    --logo-icon--normal: 3rem;
+    --logo-icon--large: 5rem;
+
+    display: flex;
+    align-items: center;
+
+    svg,
+    img {
+      flex: 0 0 auto;
+    }
+
+    .ExcalidrawLogo-icon {
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    &.is-mobile {
+      .ExcalidrawLogo-icon {
+        height: var(--logo-icon--mobile);
+      }
+    }
+
+    &.is-xs {
+      .ExcalidrawLogo-icon {
+        height: var(--logo-icon--xs);
+      }
+    }
+
+    &.is-small {
+      .ExcalidrawLogo-icon {
+        height: var(--logo-icon--small);
+      }
+    }
+
+    &.is-normal {
+      .ExcalidrawLogo-icon {
+        height: var(--logo-icon--normal);
+      }
+    }
+
+    &.is-large {
+      .ExcalidrawLogo-icon {
+        height: var(--logo-icon--large);
+      }
+    }
+  }
+}
