@@ -164,16 +164,10 @@
     // ── Category chips ─────────────────────────────────────────────────────
     &__cats {
       display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
+      flex-wrap: wrap;
       gap: 4px;
       padding: 0 12px 8px;
       flex-shrink: 0;
-      scrollbar-width: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
     }
 
     &__cat-chip {
