@@ -1,6 +1,10 @@
-# Ribeiro Draw!
+<p align="center">
+  <img src="logo.png" alt="Ribeiro Draw!" width="320" />
+</p>
 
-**Whiteboard colaborativo para diagramas de arquitetura AWS com estilo hand-drawn.**
+<h1 align="center">Ribeiro Draw!</h1>
+
+<p align="center"><strong>Whiteboard colaborativo para diagramas de arquitetura AWS com estilo hand-drawn.</strong></p>
 
 Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), customizado e otimizado para criação de diagramas de infraestrutura cloud AWS. Totalmente self-hosted, sem dependências de serviços externos.
 
