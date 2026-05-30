@@ -20,12 +20,59 @@ import "./AwsIconPanel.scss";
 
 type IconSet = "services" | "resources" | "groups" | "categories";
 
-const ICON_SETS: { key: IconSet; label: string; count: number }[] = [
-  { key: "services", label: "Services", count: SERVICE_CATEGORIES.flatMap((c) => c.icons).length },
-  { key: "resources", label: "Resources", count: RESOURCE_CATEGORIES.flatMap((c) => c.icons).length },
-  { key: "groups", label: "Groups", count: GROUP_ICONS.length },
-  { key: "categories", label: "Categories", count: CATEGORY_ICONS.length },
+const ICON_SET_KEYS: { key: IconSet; count: number }[] = [
+  { key: "services", count: SERVICE_CATEGORIES.flatMap((c) => c.icons).length },
+  { key: "resources", count: RESOURCE_CATEGORIES.flatMap((c) => c.icons).length },
+  { key: "groups", count: GROUP_ICONS.length },
+  { key: "categories", count: CATEGORY_ICONS.length },
 ];
+
+const CATEGORY_I18N_MAP: Record<string, string> = {
+  "Arch_Analytics": "analytics",
+  "Arch_App-Integration": "appIntegration",
+  "Arch_Artificial-Intelligence": "ai",
+  "Arch_Blockchain": "blockchain",
+  "Arch_Business-Applications": "businessApps",
+  "Arch_Cloud-Financial-Management": "cloudFinancial",
+  "Arch_Compute": "compute",
+  "Arch_Containers": "containers",
+  "Arch_Customer-Enablement": "customerEnablement",
+  "Arch_Database": "database",
+  "Arch_Developer-Tools": "devTools",
+  "Arch_End-User-Computing": "endUserComputing",
+  "Arch_Front-End-Web-Mobile": "frontendMobile",
+  "Arch_Games": "games",
+  "Arch_General-Icons": "general",
+  "Arch_Internet-of-Things": "iot",
+  "Arch_Management-Governance": "managementGovernance",
+  "Arch_Media-Services": "mediaServices",
+  "Arch_Migration-Modernization": "migration",
+  "Arch_Networking-Content-Delivery": "networking",
+  "Arch_Quantum-Technologies": "quantum",
+  "Arch_Satellite": "satellite",
+  "Arch_Security-Identity-Compliance": "security",
+  "Arch_Storage": "storage",
+  "Res_Analytics": "analytics",
+  "Res_Application-Integration": "appIntegration",
+  "Res_Artificial-Intelligence": "ai",
+  "Res_Blockchain": "blockchain",
+  "Res_Business-Applications": "businessApps",
+  "Res_Compute": "compute",
+  "Res_Containers": "containers",
+  "Res_Database": "database",
+  "Res_Developer-Tools": "devTools",
+  "Res_End-User-Computing": "endUserComputing",
+  "Res_Front-End-Web-Mobile": "frontendMobile",
+  "Res_General-Icons": "general",
+  "Res_IoT": "iot",
+  "Res_Management-Governance": "managementGovernance",
+  "Res_Media-Services": "mediaServices",
+  "Res_Migration-Modernization": "migration",
+  "Res_Networking-Content-Delivery": "networking",
+  "Res_Quantum-Technologies": "quantum",
+  "Res_Security-Identity-Compliance": "security",
+  "Res_Storage": "storage",
+};
 
 const CARD_HEIGHT = 84;
 const GRID_GAP = 6;
@@ -69,19 +116,21 @@ const SetTabs = ({
   active,
   onSelect,
   searching,
+  t,
 }: {
   active: IconSet;
   onSelect: (s: IconSet) => void;
   searching: boolean;
+  t: (...args: any[]) => string;
 }) => (
   <div className={`aws-panel__set-tabs${searching ? " hidden" : ""}`}>
-    {ICON_SETS.map((s) => (
+    {ICON_SET_KEYS.map((s) => (
       <button
         key={s.key}
         className={`aws-panel__set-tab${active === s.key ? " active" : ""}`}
         onClick={() => onSelect(s.key)}
       >
-        <span className="aws-panel__set-tab-label">{s.label}</span>
+        <span className="aws-panel__set-tab-label">{t(`awsPanel.tabs.${s.key}`)}</span>
         <span className="aws-panel__set-tab-count">{s.count}</span>
       </button>
     ))}
@@ -93,28 +142,34 @@ const CategoryFilter = ({
   categories,
   active,
   onSelect,
+  t,
 }: {
   categories: AwsCategory[];
   active: string | null;
   onSelect: (id: string | null) => void;
+  t: (key: string) => string;
 }) => (
   <div className="aws-panel__cats">
     <button
       className={`aws-panel__cat-chip${active === null ? " active" : ""}`}
       onClick={() => onSelect(null)}
     >
-      All
+      {t("awsPanel.categories.all")}
     </button>
-    {categories.map((cat) => (
-      <button
-        key={cat.id}
-        className={`aws-panel__cat-chip${active === cat.id ? " active" : ""}`}
-        onClick={() => onSelect(active === cat.id ? null : cat.id)}
-        title={cat.label}
-      >
-        {cat.label}
-      </button>
-    ))}
+    {categories.map((cat) => {
+      const i18nKey = CATEGORY_I18N_MAP[cat.id];
+      const label = i18nKey ? t(`awsPanel.categories.${i18nKey}`) : cat.label;
+      return (
+        <button
+          key={cat.id}
+          className={`aws-panel__cat-chip${active === cat.id ? " active" : ""}`}
+          onClick={() => onSelect(active === cat.id ? null : cat.id)}
+          title={label}
+        >
+          {label}
+        </button>
+      );
+    })}
   </div>
 );
 
@@ -385,7 +440,7 @@ export const AwsIconPanel = () => {
       <SearchInput value={search} onChange={setSearch} placeholder={t("awsPanel.searchPlaceholder")} />
 
       {/* Icon set tabs */}
-      <SetTabs active={activeSet} onSelect={setActiveSet} searching={isSearching} />
+      <SetTabs active={activeSet} onSelect={setActiveSet} searching={isSearching} t={t as any} />
 
       {/* Category chips */}
       {!isSearching && (activeSet === "services" || activeSet === "resources") && (
@@ -393,6 +448,7 @@ export const AwsIconPanel = () => {
           categories={currentCategories}
           active={activeCategory}
           onSelect={setActiveCategory}
+          t={t as any}
         />
       )}
 

@@ -741,6 +741,39 @@
     "results": "{{count}} result(s)",
     "icons": "{{count}} icons",
     "noResults": "No icons found",
-    "footer": "Click or drag to insert on canvas"
+    "footer": "Click or drag to insert on canvas",
+    "tabs": {
+      "services": "Services",
+      "resources": "Resources",
+      "groups": "Groups",
+      "categories": "Categories"
+    },
+    "categories": {
+      "all": "All",
+      "analytics": "Analytics",
+      "appIntegration": "App Integration",
+      "ai": "AI",
+      "blockchain": "Blockchain",
+      "businessApps": "Business Apps",
+      "cloudFinancial": "Cloud Financial",
+      "compute": "Compute",
+      "containers": "Containers",
+      "customerEnablement": "Customer Enablement",
+      "database": "Database",
+      "devTools": "Developer Tools",
+      "endUserComputing": "End User Computing",
+      "frontendMobile": "Frontend & Mobile",
+      "games": "Games",
+      "general": "General",
+      "iot": "IoT",
+      "managementGovernance": "Management & Governance",
+      "mediaServices": "Media Services",
+      "migration": "Migration & Modernization",
+      "networking": "Networking & CDN",
+      "quantum": "Quantum",
+      "satellite": "Satellite",
+      "security": "Security & Identity",
+      "storage": "Storage"
+    }
   }
 }
