@@ -63,7 +63,7 @@
     // ── Search ─────────────────────────────────────────────────────────────
     &__search-wrap {
       position: relative;
-      padding: 8px 12px;
+      padding: 6px 12px;
       flex-shrink: 0;
     }
 
@@ -72,10 +72,10 @@
       box-sizing: border-box;
       background: var(--aws-surface);
       border: 1px solid var(--aws-border);
-      border-radius: var(--aws-radius);
+      border-radius: var(--aws-radius-sm);
       color: var(--aws-text);
-      font-size: 12.5px;
-      padding: 9px 32px 9px 12px;
+      font-size: 12px;
+      padding: 5px 28px 5px 10px;
       outline: none;
       transition: border-color var(--aws-transition), box-shadow var(--aws-transition);
 
@@ -163,11 +163,28 @@
 
     // ── Category chips ─────────────────────────────────────────────────────
     &__cats {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: auto auto;
       gap: 4px;
-      padding: 0 12px 8px;
+      padding: 0 12px 6px;
       flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+
+      &::-webkit-scrollbar {
+        height: 3px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 2px;
+      }
     }
 
     &__cat-chip {
