@@ -38,7 +38,7 @@ const parseFileContents = async (blob: Blob | File): Promise<string> => {
     } catch (error: any) {
       if (error.message === "INVALID") {
         throw new ImageSceneDataError(
-          "Image doesn't contain scene",
+          "A imagem não contém dados de cena. Use 'Salvar como...' para salvar projetos editáveis.",
           "IMAGE_NOT_CONTAINS_SCENE_DATA",
         );
       } else {
@@ -67,7 +67,7 @@ const parseFileContents = async (blob: Blob | File): Promise<string> => {
       } catch (error: any) {
         if (error.message === "INVALID") {
           throw new ImageSceneDataError(
-            "Image doesn't contain scene",
+            "A imagem não contém dados de cena. Use 'Salvar como...' para salvar projetos editáveis.",
             "IMAGE_NOT_CONTAINS_SCENE_DATA",
           );
         } else {
@@ -151,7 +151,7 @@ export const loadSceneOrLibraryFromBlob = async (
     } catch (error: any) {
       if (isSupportedImageFile(blob)) {
         throw new ImageSceneDataError(
-          "Image doesn't contain scene",
+          "A imagem não contém dados de cena. Use 'Salvar como...' para salvar projetos editáveis.",
           "IMAGE_NOT_CONTAINS_SCENE_DATA",
         );
       }
