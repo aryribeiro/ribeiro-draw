@@ -104,10 +104,8 @@ export const loadFromJSON = async (
   localElements: readonly ExcalidrawElement[] | null,
 ) => {
   const file = await fileOpen({
-    description: "Excalidraw files",
-    // ToDo: Be over-permissive until https://bugs.webkit.org/show_bug.cgi?id=34442
-    // gets resolved. Else, iOS users cannot open `.excalidraw` files.
-    // extensions: ["json", "excalidraw", "png", "svg"],
+    description: "Ribeiro Draw! files",
+    extensions: ["json", "excalidraw", "png", "svg"],
   });
   return loadFromBlob(file, localAppState, localElements, file.handle);
 };
