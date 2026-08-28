@@ -742,8 +742,8 @@
     "mmb": "Scroll wheel"
   },
   "awsPanel": {
-    "title": "AWS Architecture Icons",
-    "searchPlaceholder": "Search AWS icons...",
+    "title": "Architecture Icons",
+    "searchPlaceholder": "Search icons...",
     "results": "{{count}} result(s)",
     "icons": "{{count}} icons",
     "noResults": "No icons found",

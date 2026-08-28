@@ -3,6 +3,7 @@ import { WelcomeScreen } from "@excalidraw/excalidraw/index";
 import React from "react";
 
 import { TOTAL_ICON_COUNT } from "../data/awsIcons";
+import { TOTAL_TECH_ICON_COUNT } from "../data/techIconsMeta";
 
 export const AppWelcomeScreen: React.FC<{
   onCollabDialogOpen: () => any;
@@ -16,8 +17,8 @@ export const AppWelcomeScreen: React.FC<{
       {" de forma simples."}
       <br />
       <span style={{ fontSize: "0.75em", opacity: 0.7, fontWeight: 400 }}>
-        {TOTAL_ICON_COUNT} ícones oficiais AWS · estilo hand-drawn · colaboração
-        em tempo real
+        {TOTAL_ICON_COUNT + TOTAL_TECH_ICON_COUNT} ícones (AWS oficiais + tech)
+        · abre e salva .drawio · estilo hand-drawn
       </span>
     </>
   );

@@ -58,9 +58,10 @@ ribeiro-draw/
 │   ├── math/                # Geometria e cálculos
 │   └── utils/               # Utilitários de exportação
 ├── public/
-│   └── icons/               # 810 SVGs originais AWS (4 conjuntos)
+│   └── icons/               # 810 SVGs AWS (4 conjuntos) + Tech-Icons (131)
 ├── scripts/
-│   └── generate-aws-manifest.mjs  # Gerador de manifest com data-URIs inline
+│   ├── generate-aws-manifest.mjs   # Manifest AWS com data-URIs inline
+│   └── generate-tech-manifest.mjs  # Manifest do Pack Tech (chunk sob demanda)
 ├── .env.production          # Config de produção (tudo local, zero terceiros)
 ├── vercel.json              # Configuração de deploy Vercel
 └── package.json             # Monorepo root

@@ -742,8 +742,8 @@
     "defaultMessage": "Preparando para salvar..."
   },
   "awsPanel": {
-    "title": "Ícones AWS Architecture",
-    "searchPlaceholder": "Buscar ícones AWS...",
+    "title": "Ícones de Arquitetura",
+    "searchPlaceholder": "Buscar ícones...",
     "results": "{{count}} resultado(s)",
     "icons": "{{count}} ícones",
     "noResults": "Nenhum ícone encontrado",
