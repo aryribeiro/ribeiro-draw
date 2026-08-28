@@ -45,15 +45,32 @@ describe("arquivo real: arquitetura workshop-ary.drawio", () => {
       expect((text as any).fontFamily).toBe(2);
     }
 
-    // (5) topologia: arestas ortogonais com as duas pontas ancoradas viram
-    // setas elbow do próprio Excalidraw (7 das 9 têm source e target)
-    const elbowed = arrows.filter((arrow) => (arrow as any).elbowed);
-    expect(elbowed).toHaveLength(7);
-
-    // conectividade preservada nas arestas ancoradas
-    expect(
-      arrows.filter((a) => (a as any).startBinding && (a as any).endBinding),
-    ).toHaveLength(7);
+    // (5) topologia: setas encostam na BORDA das formas (nunca no centro do
+    // ícone), com rota Manhattan própria nas ortogonais desalinhadas
+    const anchored = arrows.filter(
+      (a) => (a as any).startBinding && (a as any).endBinding,
+    );
+    expect(anchored).toHaveLength(7);
+    const byId = new Map(elements.map((el) => [el.id, el]));
+    for (const arrow of anchored) {
+      const linear = arrow as any;
+      for (const [binding, pointIndex] of [
+        [linear.startBinding, 0],
+        [linear.endBinding, linear.points.length - 1],
+      ] as const) {
+        const bound = byId.get(binding.elementId)!;
+        const px = linear.x + linear.points[pointIndex][0];
+        const py = linear.y + linear.points[pointIndex][1];
+        const inside =
+          px > bound.x + 1 &&
+          px < bound.x + bound.width - 1 &&
+          py > bound.y + 1 &&
+          py < bound.y + bound.height - 1;
+        expect(inside).toBe(false);
+      }
+    }
+    // ortogonais desalinhadas ganham pontos intermediários (dobra em L/Z)
+    expect(anchored.some((a) => (a as any).points.length > 2)).toBe(true);
   });
 });
 

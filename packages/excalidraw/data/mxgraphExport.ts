@@ -149,7 +149,7 @@ export const exportToMxGraphXml = (
         const targetId: string | undefined =
           linear.endBinding?.elementId ?? undefined;
         const style = `html=1;${
-          linear.elbowed
+          (linear.points?.length ?? 2) > 2
             ? "edgeStyle=orthogonalEdgeStyle;rounded=1;"
             : "edgeStyle=none;"
         }strokeColor=${colorOrNone(el.strokeColor)};${

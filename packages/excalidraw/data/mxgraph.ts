@@ -736,46 +736,131 @@ export const convertMxGraphToExcalidraw = async (
         ? absolutePosition(parentCell, cells, positions)
         : { x: 0, y: 0 };
 
+      interface EdgeEnd {
+        cx: number;
+        cy: number;
+        hw: number;
+        hh: number;
+        anchored: boolean;
+      }
       const endpointOf = (
         cell: MxCell | undefined,
         point: MxPoint | null,
-      ): { x: number; y: number } | null => {
+      ): EdgeEnd | null => {
         if (cell) {
           const pos = absolutePosition(cell, cells, positions);
-          return { x: pos.x + cell.width / 2, y: pos.y + cell.height / 2 };
+          return {
+            cx: pos.x + cell.width / 2,
+            cy: pos.y + cell.height / 2,
+            hw: cell.width / 2,
+            hh: cell.height / 2,
+            anchored: true,
+          };
         }
         if (point) {
-          return { x: parentOffset.x + point.x, y: parentOffset.y + point.y };
+          return {
+            cx: parentOffset.x + point.x,
+            cy: parentOffset.y + point.y,
+            hw: 0,
+            hh: 0,
+            anchored: false,
+          };
         }
         return null;
       };
 
-      const startPt = endpointOf(source, edge.sourcePoint);
-      const endPt = endpointOf(target, edge.targetPoint);
-      if (!startPt || !endPt) {
+      const startEnd = endpointOf(source, edge.sourcePoint);
+      const endEnd = endpointOf(target, edge.targetPoint);
+      if (!startEnd || !endEnd) {
         continue;
       }
-      const startX = startPt.x + pageOffsetX;
-      const startY = startPt.y;
-      const endX = endPt.x + pageOffsetX;
-      const endY = endPt.y;
+
+      // a seta encosta na BORDA da forma (com gap), nunca no centro —
+      // o roteador elbow do Excalidraw não roda em import estático, então
+      // a geometria final é responsabilidade do conversor
+      const GAP = 4;
+      const borderPoint = (
+        from: EdgeEnd,
+        toX: number,
+        toY: number,
+      ): { x: number; y: number } => {
+        if (!from.anchored || (from.hw === 0 && from.hh === 0)) {
+          return { x: from.cx, y: from.cy };
+        }
+        const dx = toX - from.cx;
+        const dy = toY - from.cy;
+        const tx = dx !== 0 ? (from.hw + GAP) / Math.abs(dx) : Infinity;
+        const ty = dy !== 0 ? (from.hh + GAP) / Math.abs(dy) : Infinity;
+        const t = Math.min(tx, ty, 1);
+        return { x: from.cx + dx * t, y: from.cy + dy * t };
+      };
+
       const orthogonal = (edge.style.get("edgeStyle") ?? "").includes(
         "orthogonal",
       );
 
+      let route: { x: number; y: number }[];
+      if (orthogonal && startEnd.anchored && endEnd.anchored) {
+        // rota Manhattan: sai pela face voltada ao destino e dobra no meio
+        const dx = endEnd.cx - startEnd.cx;
+        const dy = endEnd.cy - startEnd.cy;
+        if (Math.abs(dx) >= Math.abs(dy)) {
+          const sx = startEnd.cx + Math.sign(dx) * (startEnd.hw + GAP);
+          const ex = endEnd.cx - Math.sign(dx) * (endEnd.hw + GAP);
+          if (Math.abs(dy) < 1) {
+            route = [
+              { x: sx, y: startEnd.cy },
+              { x: ex, y: endEnd.cy },
+            ];
+          } else {
+            const mid = (sx + ex) / 2;
+            route = [
+              { x: sx, y: startEnd.cy },
+              { x: mid, y: startEnd.cy },
+              { x: mid, y: endEnd.cy },
+              { x: ex, y: endEnd.cy },
+            ];
+          }
+        } else {
+          const sy = startEnd.cy + Math.sign(dy) * (startEnd.hh + GAP);
+          const ey = endEnd.cy - Math.sign(dy) * (endEnd.hh + GAP);
+          if (Math.abs(dx) < 1) {
+            route = [
+              { x: startEnd.cx, y: sy },
+              { x: endEnd.cx, y: ey },
+            ];
+          } else {
+            const mid = (sy + ey) / 2;
+            route = [
+              { x: startEnd.cx, y: sy },
+              { x: startEnd.cx, y: mid },
+              { x: endEnd.cx, y: mid },
+              { x: endEnd.cx, y: ey },
+            ];
+          }
+        }
+      } else {
+        route = [
+          borderPoint(startEnd, endEnd.cx, endEnd.cy),
+          borderPoint(endEnd, startEnd.cx, startEnd.cy),
+        ];
+      }
+
+      const originX = route[0].x + pageOffsetX;
+      const originY = route[0].y;
+      const xs = route.map((p) => p.x);
+      const ys = route.map((p) => p.y);
+
       skeletons.push({
         type: "arrow",
         id: elementIdOf(edge.id),
-        x: startX,
-        y: startY,
-        width: Math.abs(endX - startX),
-        height: Math.abs(endY - startY),
-        points: [pointFrom(0, 0), pointFrom(endX - startX, endY - startY)],
+        x: originX,
+        y: originY,
+        width: Math.max(...xs) - Math.min(...xs),
+        height: Math.max(...ys) - Math.min(...ys),
+        points: route.map((p) => pointFrom(p.x - route[0].x, p.y - route[0].y)),
         ...(source ? { start: { id: elementIdOf(source.id) } } : {}),
         ...(target ? { end: { id: elementIdOf(target.id) } } : {}),
-        // elbow apenas com as duas pontas ancoradas — o roteador ortogonal
-        // do Excalidraw depende dos bindings
-        ...(orthogonal && source && target ? { elbowed: true } : {}),
         roughness: 0,
         strokeColor: mapColor(edge.style.get("strokeColor"), "#1e1e1e"),
         ...(edge.style.get("dashed") === "1"
