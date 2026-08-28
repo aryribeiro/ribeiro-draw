@@ -85,6 +85,7 @@ function cleanServiceName(filename) {
   return filename
     .replace(/^Arch_/, "")
     .replace(/^Res_/, "")
+    .replace(/_(16|32|48|64)_(Light|Dark)$/, "")
     .replace(/_64$/, "")
     .replace(/_48$/, "")
     .replace(/_32$/, "")

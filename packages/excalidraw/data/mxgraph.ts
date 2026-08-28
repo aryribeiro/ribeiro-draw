@@ -308,6 +308,11 @@ const svgToDataURL = (icon: MxAwsIcon): DataURL => icon.dataUri as DataURL;
 
 // ─── Modelo intermediário ────────────────────────────────────────────────────
 
+interface MxPoint {
+  x: number;
+  y: number;
+}
+
 interface MxCell {
   id: string;
   parent: string | null;
@@ -322,12 +327,55 @@ interface MxCell {
   width: number;
   height: number;
   relative: boolean;
+  /** ponta livre de aresta sem `source`/`target` (coords no espaço do pai) */
+  sourcePoint: MxPoint | null;
+  targetPoint: MxPoint | null;
 }
 
 // filho direto por tag, sem querySelector(":scope >") — ids do draw.io podem
 // começar com dígito e quebram seletores CSS em alguns ambientes
 const directChild = (node: Element, tagName: string): Element | null =>
   Array.from(node.children).find((c) => c.tagName === tagName) ?? null;
+
+const readEndpoint = (
+  geometry: Element | null,
+  which: "sourcePoint" | "targetPoint",
+): MxPoint | null => {
+  if (!geometry) {
+    return null;
+  }
+  const point = Array.from(geometry.children).find(
+    (c) => c.tagName === "mxPoint" && c.getAttribute("as") === which,
+  );
+  if (!point) {
+    return null;
+  }
+  return {
+    x: Number(point.getAttribute("x") ?? 0),
+    y: Number(point.getAttribute("y") ?? 0),
+  };
+};
+
+const buildCell = (id: string, node: Element, label: string): MxCell => {
+  const geometry = directChild(node, "mxGeometry");
+  return {
+    id,
+    parent: node.getAttribute("parent"),
+    source: node.getAttribute("source"),
+    target: node.getAttribute("target"),
+    vertex: node.getAttribute("vertex") === "1",
+    edge: node.getAttribute("edge") === "1",
+    style: parseStyle(node.getAttribute("style")),
+    label,
+    x: Number(geometry?.getAttribute("x") ?? 0),
+    y: Number(geometry?.getAttribute("y") ?? 0),
+    width: Number(geometry?.getAttribute("width") ?? 0),
+    height: Number(geometry?.getAttribute("height") ?? 0),
+    relative: geometry?.getAttribute("relative") === "1",
+    sourcePoint: readEndpoint(geometry, "sourcePoint"),
+    targetPoint: readEndpoint(geometry, "targetPoint"),
+  };
+};
 
 const readCells = (model: Element): Map<string, MxCell> => {
   const cells = new Map<string, MxCell>();
@@ -336,29 +384,21 @@ const readCells = (model: Element): Map<string, MxCell> => {
     if (!id || id === "0" || id === "1") {
       continue;
     }
-    const geometry = directChild(node, "mxGeometry");
     // células envelopadas (<object label=… id=…><mxCell…>) usam o pai como fonte
     const wrapper =
       node.parentElement && node.parentElement.tagName !== "root"
         ? node.parentElement
         : null;
-    cells.set(id, {
+    cells.set(
       id,
-      parent: node.getAttribute("parent"),
-      source: node.getAttribute("source"),
-      target: node.getAttribute("target"),
-      vertex: node.getAttribute("vertex") === "1",
-      edge: node.getAttribute("edge") === "1",
-      style: parseStyle(node.getAttribute("style")),
-      label: cleanLabel(
-        node.getAttribute("value") ?? wrapper?.getAttribute("label") ?? "",
+      buildCell(
+        id,
+        node,
+        cleanLabel(
+          node.getAttribute("value") ?? wrapper?.getAttribute("label") ?? "",
+        ),
       ),
-      x: Number(geometry?.getAttribute("x") ?? 0),
-      y: Number(geometry?.getAttribute("y") ?? 0),
-      width: Number(geometry?.getAttribute("width") ?? 0),
-      height: Number(geometry?.getAttribute("height") ?? 0),
-      relative: geometry?.getAttribute("relative") === "1",
-    });
+    );
   }
   // células envelopadas em <object>/<UserObject>: o id fica no envelope
   for (const wrapper of Array.from(
@@ -369,22 +409,10 @@ const readCells = (model: Element): Map<string, MxCell> => {
     if (!id || !inner || cells.has(id)) {
       continue;
     }
-    const geometry = directChild(inner, "mxGeometry");
-    cells.set(id, {
+    cells.set(
       id,
-      parent: inner.getAttribute("parent"),
-      source: inner.getAttribute("source"),
-      target: inner.getAttribute("target"),
-      vertex: inner.getAttribute("vertex") === "1",
-      edge: inner.getAttribute("edge") === "1",
-      style: parseStyle(inner.getAttribute("style")),
-      label: cleanLabel(wrapper.getAttribute("label")),
-      x: Number(geometry?.getAttribute("x") ?? 0),
-      y: Number(geometry?.getAttribute("y") ?? 0),
-      width: Number(geometry?.getAttribute("width") ?? 0),
-      height: Number(geometry?.getAttribute("height") ?? 0),
-      relative: geometry?.getAttribute("relative") === "1",
-    });
+      buildCell(id, inner, cleanLabel(wrapper.getAttribute("label"))),
+    );
   }
   return cells;
 };
@@ -506,6 +534,7 @@ export const convertMxGraphToExcalidraw = async (
           strokeColor: strokeColor === "transparent" ? "#1e1e1e" : strokeColor,
           backgroundColor,
           strokeStyle: dashed ? "dashed" : "solid",
+          roughness: 0,
         });
         if (cell.label) {
           skeletons.push({
@@ -514,6 +543,8 @@ export const convertMxGraphToExcalidraw = async (
             x: x + 8,
             y: y + 6,
             fontSize: 14,
+            fontFamily: 2,
+            roughness: 0,
             strokeColor:
               strokeColor === "transparent" ? "#1e1e1e" : strokeColor,
           });
@@ -574,6 +605,9 @@ export const convertMxGraphToExcalidraw = async (
             x: x + (cell.width || 78) / 2 - captionWidth / 2,
             y: y + (cell.height || 78) + 6,
             fontSize: ICON_LABEL_FONT_SIZE,
+            fontFamily: 2,
+            roughness: 0,
+            textAlign: "center",
             strokeColor: "#1e1e1e",
           });
         }
@@ -582,15 +616,40 @@ export const convertMxGraphToExcalidraw = async (
 
       if (isTextCell(cell)) {
         if (cell.label) {
+          const fontSize = Number(style.get("fontSize") ?? 16);
+          const align = style.get("align") ?? "left";
+          const vAlign = style.get("verticalAlign") ?? "top";
+          const textHeight = fontSize * 1.25 * cell.label.split("\n").length;
+          const yOffset =
+            vAlign === "middle"
+              ? Math.max(0, (cell.height - textHeight) / 2)
+              : vAlign === "bottom"
+              ? Math.max(0, cell.height - textHeight)
+              : 0;
           skeletons.push({
             type: "text",
             id: elementIdOf(cell.id),
             text: cell.label,
             x,
-            y,
-            fontSize: Number(style.get("fontSize") ?? 16),
+            y: y + yOffset,
+            fontSize,
+            fontFamily: 2,
+            roughness: 0,
             strokeColor: mapColor(style.get("fontColor"), "#1e1e1e"),
-          });
+            // honrar o alinhamento dentro da caixa original do draw.io
+            ...(cell.width > 0
+              ? {
+                  width: cell.width,
+                  autoResize: false,
+                  textAlign:
+                    align === "right"
+                      ? ("right" as const)
+                      : align === "center"
+                      ? ("center" as const)
+                      : ("left" as const),
+                }
+              : {}),
+          } as ExcalidrawElementSkeleton);
         }
         continue;
       }
@@ -610,25 +669,49 @@ export const convertMxGraphToExcalidraw = async (
         strokeColor: strokeColor === "transparent" ? "#1e1e1e" : strokeColor,
         backgroundColor,
         strokeStyle: dashed ? "dashed" : "solid",
+        roughness: 0,
         ...(style.get("rounded") === "1"
           ? { roundness: { type: 3 as const } }
           : {}),
-        ...(cell.label ? { label: { text: cell.label } } : {}),
+        ...(cell.label ? { label: { text: cell.label, fontFamily: 2 } } : {}),
       });
     }
 
     for (const edge of edges) {
       const source = edge.source ? cells.get(edge.source) : undefined;
       const target = edge.target ? cells.get(edge.target) : undefined;
-      if (!source || !target) {
+      // pontas livres (sourcePoint/targetPoint) ficam no espaço do pai da aresta
+      const parentCell = edge.parent ? cells.get(edge.parent) : undefined;
+      const parentOffset = parentCell?.vertex
+        ? absolutePosition(parentCell, cells, positions)
+        : { x: 0, y: 0 };
+
+      const endpointOf = (
+        cell: MxCell | undefined,
+        point: MxPoint | null,
+      ): { x: number; y: number } | null => {
+        if (cell) {
+          const pos = absolutePosition(cell, cells, positions);
+          return { x: pos.x + cell.width / 2, y: pos.y + cell.height / 2 };
+        }
+        if (point) {
+          return { x: parentOffset.x + point.x, y: parentOffset.y + point.y };
+        }
+        return null;
+      };
+
+      const startPt = endpointOf(source, edge.sourcePoint);
+      const endPt = endpointOf(target, edge.targetPoint);
+      if (!startPt || !endPt) {
         continue;
       }
-      const sourcePos = absolutePosition(source, cells, positions);
-      const targetPos = absolutePosition(target, cells, positions);
-      const startX = sourcePos.x + source.width / 2 + pageOffsetX;
-      const startY = sourcePos.y + source.height / 2;
-      const endX = targetPos.x + target.width / 2 + pageOffsetX;
-      const endY = targetPos.y + target.height / 2;
+      const startX = startPt.x + pageOffsetX;
+      const startY = startPt.y;
+      const endX = endPt.x + pageOffsetX;
+      const endY = endPt.y;
+      const orthogonal = (edge.style.get("edgeStyle") ?? "").includes(
+        "orthogonal",
+      );
 
       skeletons.push({
         type: "arrow",
@@ -638,13 +721,19 @@ export const convertMxGraphToExcalidraw = async (
         width: Math.abs(endX - startX),
         height: Math.abs(endY - startY),
         points: [pointFrom(0, 0), pointFrom(endX - startX, endY - startY)],
-        start: { id: elementIdOf(source.id) },
-        end: { id: elementIdOf(target.id) },
+        ...(source ? { start: { id: elementIdOf(source.id) } } : {}),
+        ...(target ? { end: { id: elementIdOf(target.id) } } : {}),
+        // elbow apenas com as duas pontas ancoradas — o roteador ortogonal
+        // do Excalidraw depende dos bindings
+        ...(orthogonal && source && target ? { elbowed: true } : {}),
+        roughness: 0,
         strokeColor: mapColor(edge.style.get("strokeColor"), "#1e1e1e"),
         ...(edge.style.get("dashed") === "1"
           ? { strokeStyle: "dashed" as const }
           : {}),
-        ...(edge.label ? { label: { text: edge.label, fontSize: 12 } } : {}),
+        ...(edge.label
+          ? { label: { text: edge.label, fontSize: 12, fontFamily: 2 } }
+          : {}),
       } as ExcalidrawElementSkeleton);
     }
 
