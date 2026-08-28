@@ -553,6 +553,56 @@ export const convertMxGraphToExcalidraw = async (
       }
 
       const token = awsIconToken(style);
+      // imagem embutida no estilo (shape=image;image=data:...) — usado pelo
+      // draw.io para imagens coladas e pelo nosso exportador para ícones
+      const embeddedImage = style.get("image");
+      if (
+        style.get("shape") === "image" &&
+        embeddedImage?.startsWith("data:")
+      ) {
+        // convenção do draw.io omite ";base64" — normalizar para dataURL válido
+        const dataURL = /^data:image\/[^;,]+,/.test(embeddedImage)
+          ? embeddedImage.replace(/^(data:image\/[^;,]+),/, "$1;base64,")
+          : embeddedImage;
+        const fileId = `mximg_${cell.id}`
+          .replace(/[^a-zA-Z0-9_-]/g, "_")
+          .slice(0, 40) as FileId;
+        if (!files[fileId]) {
+          files[fileId] = {
+            mimeType: dataURL.includes("image/png")
+              ? MIME_TYPES.png
+              : MIME_TYPES.svg,
+            id: fileId,
+            dataURL: dataURL as DataURL,
+            created: Date.now(),
+          };
+        }
+        skeletons.push({
+          type: "image",
+          id: elementIdOf(cell.id),
+          x,
+          y,
+          width: cell.width || 78,
+          height: cell.height || 78,
+          fileId,
+        });
+        if (cell.label) {
+          const captionWidth = cell.label.length * ICON_LABEL_CHAR_WIDTH;
+          skeletons.push({
+            type: "text",
+            text: cell.label,
+            x: x + (cell.width || 78) / 2 - captionWidth / 2,
+            y: y + (cell.height || 78) + 6,
+            fontSize: ICON_LABEL_FONT_SIZE,
+            fontFamily: 2,
+            roughness: 0,
+            textAlign: "center",
+            strokeColor: "#1e1e1e",
+          });
+        }
+        continue;
+      }
+
       const isActor = style.get("shape") === "umlActor";
       if (token || isActor) {
         const icon = isActor

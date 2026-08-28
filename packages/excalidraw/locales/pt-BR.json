@@ -422,7 +422,13 @@
     "link_button": "Exportar link",
     "excalidrawplus_description": "Salvar a cena na sua área de trabalho Ribeiro Draw!+.",
     "excalidrawplus_button": "Exportar",
-    "excalidrawplus_exportError": "Não é possível exportar para o Ribeiro Draw!+ neste momento..."
+    "excalidrawplus_exportError": "Não é possível exportar para o Ribeiro Draw!+ neste momento...",
+    "drawio_title": "Arquivo .drawio",
+    "drawio_details": "Salvar o diagrama no formato do draw.io, editável lá também.",
+    "drawio_button": "Salvar .drawio",
+    "xml_title": "Arquivo .xml",
+    "xml_details": "Salvar o diagrama como XML (mxGraph), compatível com draw.io.",
+    "xml_button": "Salvar .xml"
   },
   "helpDialog": {
     "blog": "Leia o nosso blog",

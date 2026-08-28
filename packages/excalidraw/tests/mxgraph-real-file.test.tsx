@@ -56,3 +56,30 @@ describe("arquivo real: arquitetura workshop-ary.drawio", () => {
     ).toHaveLength(7);
   });
 });
+
+// segundo caso do corpus: .xml gerado por IA (Claude), todas arestas ancoradas
+describe("arquivo real: arquitetura-workshop.drawio.xml (gerado por IA)", () => {
+  it("importa 12 ícones, 10 arestas e todos os textos, sem perdas", async () => {
+    registerMxGraphAwsIcons(ALL_AWS_ICONS);
+    const xml = readFileSync(
+      join(__dirname, "fixtures/mxgraph/arquitetura-workshop.drawio.xml"),
+      "utf8",
+    );
+    const { elements, unresolvedTokens } = await convertMxGraphToExcalidraw(
+      xml,
+    );
+
+    const images = elements.filter((el) => el.type === "image");
+    const arrows = elements.filter((el) => el.type === "arrow");
+
+    // 10 resourceIcon (bedrock, cloudwatch, connect, dynamodb, iam, kms,
+    // lambda, lex, s3, sns) + 2 atores/roles
+    expect(images).toHaveLength(12);
+    expect(unresolvedTokens).toHaveLength(0);
+    expect(arrows).toHaveLength(10);
+    for (const arrow of arrows) {
+      expect((arrow as any).startBinding?.elementId).toBeTruthy();
+      expect((arrow as any).endBinding?.elementId).toBeTruthy();
+    }
+  });
+});

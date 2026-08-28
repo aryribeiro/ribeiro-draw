@@ -21,7 +21,7 @@ Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), cus
 - **Colaboração em tempo real** — via WebSocket (opcional, requer servidor próprio)
 - **Importa `.drawio` e `.xml`** — abra, arraste ou cole diagramas do draw.io e os gerados por IAs (ChatGPT, Claude, Gemini...); os ícones AWS do diagrama são re-mapeados para os oficiais e as ligações continuam editáveis
 - **Cole Mermaid direto no canvas** — flowcharts gerados por IA viram elementos editáveis
-- **Exportação** — PNG, SVG, clipboard, arquivo `.excalidraw`
+- **Exportação** — PNG, SVG, clipboard, arquivo `.excalidraw`, **`.drawio` e `.xml`** (abre direto no draw.io, com ícones embutidos)
 - **Canvas infinito** com zoom, pan, dark mode e estilo hand-drawn
 - **Deploy na Vercel** — build estático otimizado
 
