@@ -218,14 +218,21 @@ const VirtualGrid = ({
     return () => el.removeEventListener("scroll", handler);
   }, [containerRef]);
 
+  // ao trocar de lista (tab/chip/busca), o scrollTop guardado em state fica
+  // um frame desatualizado e renderizava cards em linhas da lista anterior
+  // (fora da altura real) — ressincronizar direto do DOM
+  useEffect(() => {
+    setScrollTop(containerRef.current?.scrollTop ?? 0);
+  }, [icons, containerRef]);
+
   const cols = 2;
   const rowHeight = CARD_HEIGHT + GRID_GAP;
   const totalRows = Math.ceil(icons.length / cols);
   const totalHeight = totalRows * rowHeight + GRID_PADDING * 2;
 
-  const startRow = Math.max(
-    0,
-    Math.floor((scrollTop - GRID_PADDING) / rowHeight) - 2,
+  const startRow = Math.min(
+    Math.max(0, Math.floor((scrollTop - GRID_PADDING) / rowHeight) - 2),
+    Math.max(0, totalRows - 1),
   );
   const endRow = Math.min(
     totalRows,
@@ -570,6 +577,9 @@ export const AwsIconPanel = () => {
           </div>
         ) : (
           <VirtualGrid
+            // remonta o grid a cada troca de lista: zera o estado interno de
+            // scroll e elimina o card fantasma intermitente
+            key={`${activeSet}|${activeCategory ?? ""}|${search.trim()}`}
             icons={displayIcons}
             onInsert={handleInsert}
             containerRef={gridRef}
