@@ -46,6 +46,7 @@ const NAME_FIXES = {
   Coracao: "Coração",
   "Balao de Fala": "Balão de Fala",
   Relogio: "Relógio",
+  "C Sharp": "C#",
 };
 
 function svgToDataUri(filePath) {
