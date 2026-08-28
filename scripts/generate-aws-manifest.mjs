@@ -14,11 +14,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const ICONS_BASE = join(ROOT, "public", "icons");
 
+// AWS Architecture Icons release date (quarterly: Q1 end of Jan, Q2 end of Apr, Q3 end of Jul)
+const ICON_SET_DATE = "07312026";
+
 // ─── Labels ──────────────────────────────────────────────────────────────────
 
 const SERVICE_LABELS = {
   "Arch_Analytics": "Analytics",
-  "Arch_App-Integration": "App Integration",
+  "Arch_Application-Integration": "App Integration",
   "Arch_Artificial-Intelligence": "Artificial Intelligence",
   "Arch_Blockchain": "Blockchain",
   "Arch_Business-Applications": "Business Applications",
@@ -26,20 +29,20 @@ const SERVICE_LABELS = {
   "Arch_Compute": "Compute",
   "Arch_Containers": "Containers",
   "Arch_Customer-Enablement": "Customer Enablement",
-  "Arch_Database": "Database",
+  "Arch_Databases": "Database",
   "Arch_Developer-Tools": "Developer Tools",
   "Arch_End-User-Computing": "End User Computing",
   "Arch_Front-End-Web-Mobile": "Frontend & Mobile",
   "Arch_Games": "Games",
   "Arch_General-Icons": "General",
   "Arch_Internet-of-Things": "Internet of Things",
-  "Arch_Management-Governance": "Management & Governance",
+  "Arch_Management-Tools": "Management & Governance",
   "Arch_Media-Services": "Media Services",
   "Arch_Migration-Modernization": "Migration & Modernization",
   "Arch_Networking-Content-Delivery": "Networking & Content Delivery",
   "Arch_Quantum-Technologies": "Quantum Technologies",
   "Arch_Satellite": "Satellite",
-  "Arch_Security-Identity-Compliance": "Security, Identity & Compliance",
+  "Arch_Security-Identity": "Security, Identity & Compliance",
   "Arch_Storage": "Storage",
 };
 
@@ -51,7 +54,7 @@ const RESOURCE_LABELS = {
   "Res_Business-Applications": "Business Applications",
   "Res_Compute": "Compute",
   "Res_Containers": "Containers",
-  "Res_Database": "Database",
+  "Res_Databases": "Database",
   "Res_Developer-Tools": "Developer Tools",
   "Res_End-User-Computing": "End User Computing",
   "Res_Front-End-Web-Mobile": "Frontend & Mobile",
@@ -62,7 +65,7 @@ const RESOURCE_LABELS = {
   "Res_Migration-Modernization": "Migration & Modernization",
   "Res_Networking-Content-Delivery": "Networking & Content Delivery",
   "Res_Quantum-Technologies": "Quantum Technologies",
-  "Res_Security-Identity-Compliance": "Security, Identity & Compliance",
+  "Res_Security-Identity": "Security, Identity & Compliance",
   "Res_Storage": "Storage",
 };
 
@@ -109,7 +112,7 @@ function cleanCategoryName(filename) {
 // ─── Scanners ────────────────────────────────────────────────────────────────
 
 function scanServiceIcons() {
-  const SERVICE_BASE = join(ICONS_BASE, "Architecture-Service-Icons_07312025");
+  const SERVICE_BASE = join(ICONS_BASE, "Architecture-Service-Icons_" + ICON_SET_DATE + "");
   const categories = [];
   const catDirs = readdirSync(SERVICE_BASE).filter((d) =>
     statSync(join(SERVICE_BASE, d)).isDirectory()
@@ -140,7 +143,7 @@ function scanServiceIcons() {
 }
 
 function scanGroupIcons() {
-  const dir = join(ICONS_BASE, "Architecture-Group-Icons_07312025");
+  const dir = join(ICONS_BASE, "Architecture-Group-Icons_" + ICON_SET_DATE + "");
   const files = readdirSync(dir).filter((f) => f.endsWith(".svg") && !f.includes("_Dark"));
   return files.map((filename) => {
     const name = cleanGroupName(basename(filename, ".svg"));
@@ -151,7 +154,7 @@ function scanGroupIcons() {
 }
 
 function scanCategoryIcons() {
-  const dir = join(ICONS_BASE, "Category-Icons_07312025", "Arch-Category_64");
+  const dir = join(ICONS_BASE, "Category-Icons_" + ICON_SET_DATE + "", "Arch-Category_64");
   let files = [];
   try {
     files = readdirSync(dir).filter((f) => f.endsWith(".svg"));
@@ -166,7 +169,7 @@ function scanCategoryIcons() {
 }
 
 function scanResourceIcons() {
-  const RESOURCE_BASE = join(ICONS_BASE, "Resource-Icons_07312025");
+  const RESOURCE_BASE = join(ICONS_BASE, "Resource-Icons_" + ICON_SET_DATE + "");
   const categories = [];
   const catDirs = readdirSync(RESOURCE_BASE).filter((d) =>
     statSync(join(RESOURCE_BASE, d)).isDirectory()
