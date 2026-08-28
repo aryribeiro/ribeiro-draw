@@ -352,6 +352,12 @@
       object-fit: contain;
       pointer-events: none;
       transition: transform var(--aws-transition);
+
+      // glifos pretos (Formas, TikTok, Vercel...) invertidos só no painel
+      // escuro; a inserção no canvas usa o SVG original
+      &--invert {
+        filter: invert(1);
+      }
     }
 
     &__icon-name {

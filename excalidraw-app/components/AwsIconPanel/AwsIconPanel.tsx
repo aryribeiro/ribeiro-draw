@@ -86,6 +86,20 @@ const CARD_HEIGHT = 84;
 const GRID_GAP = 6;
 const GRID_PADDING = 8;
 
+// glifos pretos/quase-pretos ficam invisíveis no painel escuro — invertidos
+// SÓ no menu; no canvas entram com o SVG original (preto, como deve ser)
+const DARK_GLYPH_BRAND_IDS = new Set([
+  "Tech_Brands_TikTok",
+  "Tech_Brands_Vercel",
+  "Tech_Brands_Notion",
+  "Tech_Brands_Next_js",
+  "Tech_Brands_Anthropic",
+  "Tech_Brands_Apache_Kafka",
+]);
+
+const isDarkGlyph = (iconId: string) =>
+  iconId.startsWith("Tech_Shapes_") || DARK_GLYPH_BRAND_IDS.has(iconId);
+
 // ─── Search input ────────────────────────────────────────────────────────────
 const SearchInput = ({
   value,
@@ -308,7 +322,11 @@ const VirtualIconCard = React.memo(
           alt=""
           width={36}
           height={36}
-          className="aws-panel__icon-img"
+          className={
+            isDarkGlyph(icon.id)
+              ? "aws-panel__icon-img aws-panel__icon-img--invert"
+              : "aws-panel__icon-img"
+          }
         />
         <span className="aws-panel__icon-name">{icon.name}</span>
       </button>
