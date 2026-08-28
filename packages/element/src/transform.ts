@@ -30,7 +30,7 @@ import {
   type ElementConstructorOpts,
 } from "./newElement";
 import { measureText, normalizeText } from "./textMeasurements";
-import { isArrowElement } from "./typeChecks";
+import { isArrowElement, isBindableElement } from "./typeChecks";
 
 import { syncInvalidIndices } from "./fractionalIndex";
 
@@ -320,11 +320,16 @@ const bindLinearElementToElement = (
             break;
           }
           default: {
-            assertNever(
-              linearElement as never,
-              `Unhandled element start type "${start.type}"`,
-              true,
-            );
+            if (existingElement && isBindableElement(existingElement)) {
+              // elemento bindável já existente (ex.: image) é usado como está
+              startBoundElement = existingElement;
+            } else {
+              assertNever(
+                linearElement as never,
+                `Unhandled element start type "${start.type}"`,
+                true,
+              );
+            }
           }
         }
       }
@@ -396,11 +401,16 @@ const bindLinearElementToElement = (
             break;
           }
           default: {
-            assertNever(
-              linearElement as never,
-              `Unhandled element end type "${endType}"`,
-              true,
-            );
+            if (existingElement && isBindableElement(existingElement)) {
+              // elemento bindável já existente (ex.: image) é usado como está
+              endBoundElement = existingElement;
+            } else {
+              assertNever(
+                linearElement as never,
+                `Unhandled element end type "${endType}"`,
+                true,
+              );
+            }
           }
         }
       }

@@ -19,6 +19,7 @@ import { decodeSvgBase64Payload } from "../scene/export";
 import { base64ToString, stringToBase64, toByteString } from "./encode";
 import { nativeFileSystemSupported } from "./filesystem";
 import { isValidExcalidrawData, isValidLibrary } from "./json";
+import { convertMxGraphToExcalidraw, isMxGraphData } from "./mxgraph";
 import {
   restoreAppState,
   restoreElements,
@@ -144,6 +145,31 @@ export const loadSceneOrLibraryFromBlob = async (
   fileHandle?: FileSystemFileHandle | null,
 ) => {
   const contents = await parseFileContents(blob);
+
+  if (isMxGraphData(contents)) {
+    const { elements, files } = await convertMxGraphToExcalidraw(contents);
+    return {
+      type: MIME_TYPES.excalidraw,
+      data: {
+        elements: restoreElements(elements, localElements, {
+          repairBindings: true,
+          deleteInvisibleElements: true,
+        }),
+        appState: restoreAppState(
+          {
+            theme: localAppState?.theme,
+            fileHandle: null,
+            ...(localAppState
+              ? calculateScrollCenter(elements, localAppState)
+              : {}),
+          },
+          localAppState,
+        ),
+        files,
+      },
+    };
+  }
+
   let data;
   try {
     try {

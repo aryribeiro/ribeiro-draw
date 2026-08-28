@@ -257,6 +257,9 @@ export const STRING_MIME_TYPES = {
   excalidrawlib: "application/vnd.excalidrawlib+json",
   // list of excalidraw library item ids
   excalidrawlibIds: "application/vnd.excalidrawlib.ids+json",
+  // draw.io / mxGraph diagrams (import)
+  xml: "application/xml",
+  drawio: "application/vnd.jgraph.mxfile",
 } as const;
 
 export const MIME_TYPES = {

@@ -423,6 +423,10 @@ import { textWysiwyg } from "../wysiwyg/textWysiwyg";
 import { isOverScrollBars } from "../scene/scrollbars";
 
 import { isMaybeMermaidDefinition } from "../mermaid";
+import {
+  convertMxGraphToExcalidraw,
+  isMxGraphData,
+} from "../data/mxgraph";
 
 import { LassoTrail } from "../lasso";
 
@@ -3782,6 +3786,24 @@ class App extends React.Component<AppProps, AppState> {
     // ------------------- Only textual stuff remaining -------------------
     if (!data.text) {
       return;
+    }
+
+    // ------------------- draw.io / mxGraph XML -------------------
+    if (!isPlainPaste && isMxGraphData(data.text)) {
+      try {
+        const { elements, files } = await convertMxGraphToExcalidraw(data.text);
+        this.addElementsFromPasteOrLibrary({
+          elements,
+          files,
+          position:
+            this.editorInterface.formFactor === "desktop" ? "cursor" : "center",
+        });
+        return;
+      } catch (err: any) {
+        console.warn(
+          `parsing pasted text as mxGraph diagram failed: ${err.message}`,
+        );
+      }
     }
 
     // ------------------- Successful Mermaid -------------------

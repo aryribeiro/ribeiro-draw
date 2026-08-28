@@ -9,7 +9,7 @@ Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), cus
 
 ## Recursos
 
-- **824 ícones oficiais AWS** inline (Architecture Service, Resource, Group e Category) — carregamento instantâneo, zero requests de rede
+- **810 ícones oficiais AWS** inline (Architecture Service, Resource, Group e Category) — carregamento instantâneo, zero requests de rede
 - **Painel lateral AWS** com busca em tempo real, filtros por categoria e tabs por tipo de ícone
 - **Inserção via clique ou drag-and-drop** com nome do serviço exibido automaticamente como texto editável
 - **Grid virtualizado** — renderiza apenas os ícones visíveis na viewport para máxima performance
@@ -18,6 +18,8 @@ Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), cus
 - **Idioma padrão: Português Brasileiro** (100% traduzido) com suporte a 30+ idiomas
 - **PWA** — funciona offline após primeiro acesso
 - **Colaboração em tempo real** — via WebSocket (opcional, requer servidor próprio)
+- **Importa `.drawio` e `.xml`** — abra, arraste ou cole diagramas do draw.io e os gerados por IAs (ChatGPT, Claude, Gemini...); os ícones AWS do diagrama são re-mapeados para os oficiais e as ligações continuam editáveis
+- **Cole Mermaid direto no canvas** — flowcharts gerados por IA viram elementos editáveis
 - **Exportação** — PNG, SVG, clipboard, arquivo `.excalidraw`
 - **Canvas infinito** com zoom, pan, dark mode e estilo hand-drawn
 - **Deploy na Vercel** — build estático otimizado
@@ -26,16 +28,16 @@ Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), cus
 
 ## Stack
 
-| Camada | Tecnologia |
-|--------|-----------|
-| Frontend | React 19, TypeScript 5.9 |
-| Build | Vite 5, esbuild |
-| Monorepo | Yarn Workspaces |
-| Estilo | SCSS Modules |
-| State | Jotai |
-| Canvas | HTML5 Canvas (roughjs) |
-| Deploy | Vercel (static) |
-| Ícones | SVG data-URIs inline (gerados no build) |
+| Camada   | Tecnologia                              |
+| -------- | --------------------------------------- |
+| Frontend | React 19, TypeScript 5.9                |
+| Build    | Vite 5, esbuild                         |
+| Monorepo | Yarn Workspaces                         |
+| Estilo   | SCSS Modules                            |
+| State    | Jotai                                   |
+| Canvas   | HTML5 Canvas (roughjs)                  |
+| Deploy   | Vercel (static)                         |
+| Ícones   | SVG data-URIs inline (gerados no build) |
 
 ---
 
@@ -45,7 +47,7 @@ Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), cus
 ribeiro-draw/
 ├── excalidraw-app/          # App web principal (Ribeiro Draw!)
 │   ├── components/          # Componentes customizados (AwsIconPanel, etc.)
-│   ├── data/                # awsIcons.ts (manifest gerado com 824 ícones inline)
+│   ├── data/                # awsIcons.ts (manifest gerado com 810 ícones inline)
 │   ├── collab/              # Módulo de colaboração WebSocket
 │   └── index.html           # Entry point
 ├── packages/
@@ -55,7 +57,7 @@ ribeiro-draw/
 │   ├── math/                # Geometria e cálculos
 │   └── utils/               # Utilitários de exportação
 ├── public/
-│   └── icons/               # 824 SVGs originais AWS (4 conjuntos)
+│   └── icons/               # 810 SVGs originais AWS (4 conjuntos)
 ├── scripts/
 │   └── generate-aws-manifest.mjs  # Gerador de manifest com data-URIs inline
 ├── .env.production          # Config de produção (tudo local, zero terceiros)
@@ -68,14 +70,14 @@ ribeiro-draw/
 ## Conjuntos de Ícones AWS
 
 | Conjunto | Quantidade | Descrição |
-|----------|-----------|-----------|
-| Architecture Service | 309 | Serviços AWS (EC2, S3, Lambda, etc.) |
-| Resource | 477 | Recursos específicos (instâncias, buckets, etc.) |
-| Category | 25 | Ícones de categoria (Compute, Database, etc.) |
+| --- | --- | --- |
+| Architecture Service | 305 | Serviços AWS (EC2, S3, Lambda, etc.) |
+| Resource | 466 | Recursos específicos (instâncias, buckets, etc.) |
+| Category | 26 | Ícones de categoria (Compute, Database, etc.) |
 | Architecture Group | 13 | Agrupadores (VPC, Region, Subnet, etc.) |
-| **Total** | **824** | |
+| **Total** | **810** |  |
 
-Fonte: [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) — versão Julho 2025.
+Fonte: [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) — versão Julho 2026.
 
 ---
 
@@ -154,18 +156,18 @@ Basta conectar o repositório GitHub na Vercel. Não é necessário configurar v
 
 ### Ferramentas principais
 
-| Atalho | Ferramenta |
-|--------|-----------|
-| `1` | Seleção |
-| `2` | Retângulo |
-| `3` | Losango |
-| `4` | Círculo |
-| `5` | Seta |
-| `6` | Linha |
-| `7` | Lápis (desenho livre) |
-| `8` | Texto |
-| `9` | Imagem |
-| `0` | Borracha |
+| Atalho | Ferramenta            |
+| ------ | --------------------- |
+| `1`    | Seleção               |
+| `2`    | Retângulo             |
+| `3`    | Losango               |
+| `4`    | Círculo               |
+| `5`    | Seta                  |
+| `6`    | Linha                 |
+| `7`    | Lápis (desenho livre) |
+| `8`    | Texto                 |
+| `9`    | Imagem                |
+| `0`    | Borracha              |
 
 ### Editar elementos
 
@@ -190,7 +192,7 @@ Basta conectar o repositório GitHub na Vercel. Não é necessário configurar v
 - **Salva automaticamente** no browser (localStorage)
 - **Exportar como imagem**: `Ctrl + Shift + E` (PNG ou SVG)
 - **Salvar arquivo**: `Ctrl + S` (formato `.excalidraw`)
-- **Abrir arquivo**: `Ctrl + O`
+- **Abrir arquivo**: `Ctrl + O` (`.excalidraw`, `.drawio`, `.xml`, `.png`/`.svg` com cena)
 - **Copiar para clipboard**: `Ctrl + Shift + C` (como PNG)
 
 ### Dicas

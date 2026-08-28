@@ -36,6 +36,7 @@ import {
 import polyfill from "@excalidraw/excalidraw/polyfill";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { loadFromBlob } from "@excalidraw/excalidraw/data/blob";
+import { registerMxGraphAwsIcons } from "@excalidraw/excalidraw/data/mxgraph";
 import { t } from "@excalidraw/excalidraw/i18n";
 
 import {
@@ -144,9 +145,14 @@ import "./index.scss";
 import { ExcalidrawPlusPromoBanner } from "./components/ExcalidrawPlusPromoBanner";
 import { AppSidebar } from "./components/AppSidebar";
 
+import { ALL_AWS_ICONS } from "./data/awsIcons";
+
 import type { CollabAPI } from "./collab/Collab";
 
 polyfill();
+
+// acervo local usado pelo importador .drawio/.xml para embutir ícones AWS reais
+registerMxGraphAwsIcons(ALL_AWS_ICONS);
 
 window.EXCALIDRAW_THROTTLE_RENDER = true;
 
@@ -371,7 +377,8 @@ const ExcalidrawWrapper = () => {
   const excalidrawAPI = useExcalidrawAPI();
 
   const [errorMessage, setErrorMessage] = useState("");
-  const isCollabDisabled = isRunningInIframe() || !import.meta.env.VITE_APP_WS_SERVER_URL;
+  const isCollabDisabled =
+    isRunningInIframe() || !import.meta.env.VITE_APP_WS_SERVER_URL;
 
   const { editorTheme, appTheme, setAppTheme } = useHandleAppTheme();
 
@@ -437,7 +444,9 @@ const ExcalidrawWrapper = () => {
 
     const handleDrop = (e: DragEvent) => {
       const dataUri = e.dataTransfer?.getData("application/aws-icon-data");
-      if (!dataUri) return;
+      if (!dataUri) {
+        return;
+      }
 
       e.preventDefault();
       e.stopPropagation();
@@ -447,10 +456,17 @@ const ExcalidrawWrapper = () => {
       const clientX = e.clientX - (rect?.left ?? 0);
       const clientY = e.clientY - (rect?.top ?? 0);
 
-      const x = (clientX - appState.offsetLeft) / appState.zoom.value - appState.scrollX - 64;
-      const y = (clientY - appState.offsetTop) / appState.zoom.value - appState.scrollY - 64;
+      const x =
+        (clientX - appState.offsetLeft) / appState.zoom.value -
+        appState.scrollX -
+        64;
+      const y =
+        (clientY - appState.offsetTop) / appState.zoom.value -
+        appState.scrollY -
+        64;
 
-      const iconName = e.dataTransfer?.getData("application/aws-icon-name") || "aws-icon";
+      const iconName =
+        e.dataTransfer?.getData("application/aws-icon-name") || "aws-icon";
       const ts = Date.now();
       const fileId = `aws-drop-${ts}` as any;
       const imageElId = `img-${fileId}`;
@@ -546,7 +562,9 @@ const ExcalidrawWrapper = () => {
       }
     };
 
-    const container = document.querySelector(".excalidraw-container") || document.getElementById("root");
+    const container =
+      document.querySelector(".excalidraw-container") ||
+      document.getElementById("root");
     if (container) {
       container.addEventListener("drop", handleDrop as EventListener);
       container.addEventListener("dragover", handleDragOver as EventListener);
@@ -555,7 +573,10 @@ const ExcalidrawWrapper = () => {
     return () => {
       if (container) {
         container.removeEventListener("drop", handleDrop as EventListener);
-        container.removeEventListener("dragover", handleDragOver as EventListener);
+        container.removeEventListener(
+          "dragover",
+          handleDragOver as EventListener,
+        );
       }
     };
   }, [excalidrawAPI]);

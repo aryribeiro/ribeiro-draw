@@ -105,7 +105,7 @@ export const loadFromJSON = async (
 ) => {
   const file = await fileOpen({
     description: "Ribeiro Draw! files",
-    extensions: ["json", "excalidraw", "png", "svg"],
+    extensions: ["json", "excalidraw", "png", "svg", "xml", "drawio"],
   });
   return loadFromBlob(file, localAppState, localElements, file.handle);
 };
