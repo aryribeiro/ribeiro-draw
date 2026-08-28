@@ -23,6 +23,7 @@ const CATEGORY_ORDER = [
   { dir: "Brands", id: "Tech_Brands", label: "Marcas & SaaS" },
   { dir: "Cloud", id: "Tech_Cloud", label: "Cloud" },
   { dir: "Network", id: "Tech_Network", label: "Redes" },
+  { dir: "Shapes", id: "Tech_Shapes", label: "Formas" },
 ];
 
 // nomes de arquivo ficam em ASCII (evita problemas de encoding no Windows);
@@ -38,6 +39,13 @@ const NAME_FIXES = {
   Usuario: "Usuário",
   Usuarios: "Usuários",
   "Antena Satelite": "Antena Satélite",
+  Hexagono: "Hexágono",
+  Pentagono: "Pentágono",
+  Octogono: "Octógono",
+  Triangulo: "Triângulo",
+  Coracao: "Coração",
+  "Balao de Fala": "Balão de Fala",
+  Relogio: "Relógio",
 };
 
 function svgToDataUri(filePath) {

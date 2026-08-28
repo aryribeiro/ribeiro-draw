@@ -71,6 +71,13 @@ describe("arquivo real: arquitetura workshop-ary.drawio", () => {
     }
     // ortogonais desalinhadas ganham pontos intermediários (dobra em L/Z)
     expect(anchored.some((a) => (a as any).points.length > 2)).toBe(true);
+
+    // (3) posição: o título (align=center numa caixa x=115 w=1300) fica com a
+    // caixa de texto centrada no centro da caixa original (765)
+    const title = texts.find((el) =>
+      String((el as any).text).startsWith("Workshop"),
+    )! as any;
+    expect(Math.abs(title.x + title.width / 2 - 765)).toBeLessThan(30);
   });
 });
 

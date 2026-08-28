@@ -10,7 +10,7 @@ Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), cus
 ## Recursos
 
 - **810 ícones oficiais AWS** inline (Architecture Service, Resource, Group e Category) — carregamento instantâneo, zero requests de rede
-- **Pack Tech com 93 ícones extras** — marcas e SaaS (GitHub, Vercel, Streamlit, Turso, Kubernetes, Docker, Salesforce, SAP HANA, Microsoft 365, Zendesk...), logos de cloud (Google Cloud, Azure, Oracle) e ícones de redes de computadores (roteador, switch/LAN, firewall, servidores, access point...) — carregado sob demanda, sem pesar o bundle inicial
+- **Pack Tech com 131 ícones extras** — marcas e SaaS (GitHub, Vercel, Streamlit, Turso, Teams, WhatsApp, Meta, Facebook, Instagram, TikTok, Kwai, Netflix, Windows Server, Active Directory...), logos de cloud (Google Cloud, Azure, Oracle) ícones de redes de computadores (roteador, firewall, servidores, access point...) e figuras geométricas comuns (hexágono, estrela, nuvem, cilindro, balão de fala...) — carregado sob demanda, sem pesar o bundle inicial
 - **Painel lateral** com busca em tempo real, filtros por categoria e tabs por tipo de ícone
 - **Inserção via clique ou drag-and-drop** com nome do serviço exibido automaticamente como texto editável
 - **Grid virtualizado** — renderiza apenas os ícones visíveis na viewport para máxima performance
@@ -84,10 +84,11 @@ Fonte: [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) — 
 
 | Conjunto | Quantidade | Exemplos |
 | --- | --- | --- |
-| Marcas & SaaS | 48 | GitHub, Vercel, Streamlit, Turso, Kubernetes, Docker, Salesforce, SAP HANA, Microsoft 365, Zendesk, Slack, Stripe, Datadog, PostgreSQL, OpenAI, Anthropic... |
+| Marcas & SaaS | 60 | GitHub, Vercel, Streamlit, Turso, Teams, WhatsApp, Meta, Facebook, Instagram, TikTok, Kwai, Netflix, Windows Server, Active Directory, Kubernetes, Docker, Salesforce, SAP HANA, Zendesk, Slack, Stripe, OpenAI, Anthropic... |
 | Cloud | 4 | Google Cloud, Microsoft Azure, Oracle, Microsoft 365 |
 | Redes | 41 | Roteador, Firewall, Servidor, Access Point, LAN, VPN, NAS, CCTV... |
-| **Total** | **93** | carregado sob demanda (chunk separado) |
+| Formas | 26 | Hexágono, Triângulo, Estrela, Nuvem, Cilindro (BD), Balão de Fala, Documento, Cadeado, Engrenagem... |
+| **Total** | **131** | carregado sob demanda (chunk separado) |
 
 Fontes: [Simple Icons](https://simpleicons.org/) (CC0) para marcas — os logos pertencem aos respectivos donos e são usados nominativamente; [Material Design Icons / Pictogrammers](https://pictogrammers.com/library/mdi/) (Apache 2.0) para redes. Gerado por `scripts/generate-tech-manifest.mjs` a partir de `public/icons/Tech-Icons/`.
 

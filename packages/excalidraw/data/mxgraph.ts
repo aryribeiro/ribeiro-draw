@@ -476,33 +476,18 @@ const isTextCell = (cell: MxCell): boolean =>
 const ICON_LABEL_FONT_SIZE = 12;
 
 /**
- * Legenda centrada com exatidão: caixa de largura >= texto, centrada no
- * ponto pedido, com textAlign center — o Excalidraw centraliza os glifos
- * dentro da caixa, sem depender de estimativa de largura de fonte.
+ * Centralização exata de texto: o newTextElement RECALCULA o width pela
+ * medição real da fonte (a estimativa por caractere sempre erra), então a
+ * posição definitiva é aplicada DEPOIS da conversão, com o width final:
+ * `x = centerX - width/2` (ou `x = rightX - width`). Este mapa guarda a
+ * âncora pretendida de cada texto; os chips de fundo se realinham ao texto.
  */
-const captionSkeleton = (
-  caption: string,
-  centerX: number,
-  topY: number,
-): ExcalidrawElementSkeleton => {
-  const longestLine = Math.max(
-    ...caption.split("\n").map((line) => line.length),
-  );
-  const width = Math.max(longestLine * 8, 100);
-  return {
-    type: "text",
-    text: caption,
-    x: centerX - width / 2,
-    y: topY,
-    width,
-    autoResize: false,
-    textAlign: "center",
-    fontSize: ICON_LABEL_FONT_SIZE,
-    fontFamily: 2,
-    roughness: 0,
-    strokeColor: "#1e1e1e",
-  } as ExcalidrawElementSkeleton;
-};
+interface TextAnchor {
+  centerX?: number;
+  rightX?: number;
+  /** id do chip de fundo que deve abraçar este texto */
+  chipId?: string;
+}
 
 export interface MxGraphConversionResult {
   elements: readonly ExcalidrawElement[];
@@ -522,7 +507,38 @@ export const convertMxGraphToExcalidraw = async (
   const skeletons: ExcalidrawElementSkeleton[] = [];
   const files: BinaryFiles = {};
   const unresolvedTokens: string[] = [];
+  const textAnchors = new Map<string, TextAnchor>();
+  let labelSeq = 0;
   let pageOffsetX = 0;
+
+  const pushAnchoredText = (
+    text: string,
+    x: number,
+    topY: number,
+    anchor: TextAnchor,
+    fontSize = ICON_LABEL_FONT_SIZE,
+    strokeColor = "#1e1e1e",
+  ) => {
+    const id = `mxlbl_${labelSeq++}`;
+    textAnchors.set(id, anchor);
+    skeletons.push({
+      type: "text",
+      id,
+      text,
+      x,
+      y: topY,
+      fontSize,
+      fontFamily: 2,
+      roughness: 0,
+      textAlign:
+        anchor.centerX !== undefined
+          ? ("center" as const)
+          : anchor.rightX !== undefined
+          ? ("right" as const)
+          : ("left" as const),
+      strokeColor,
+    } as ExcalidrawElementSkeleton);
+  };
 
   for (const [pageIndex, model] of models.entries()) {
     const cells = readCells(model);
@@ -615,12 +631,11 @@ export const convertMxGraphToExcalidraw = async (
           fileId,
         });
         if (cell.label) {
-          skeletons.push(
-            captionSkeleton(
-              cell.label,
-              x + (cell.width || 78) / 2,
-              y + (cell.height || 78) + 6,
-            ),
+          pushAnchoredText(
+            cell.label,
+            x + (cell.width || 78) / 2,
+            y + (cell.height || 78) + 6,
+            { centerX: x + (cell.width || 78) / 2 },
           );
         }
         continue;
@@ -671,12 +686,11 @@ export const convertMxGraphToExcalidraw = async (
         }
         const caption = cell.label || (icon ? icon.name : "");
         if (caption) {
-          skeletons.push(
-            captionSkeleton(
-              caption,
-              x + (cell.width || 78) / 2,
-              y + (cell.height || 78) + 6,
-            ),
+          pushAnchoredText(
+            caption,
+            x + (cell.width || 78) / 2,
+            y + (cell.height || 78) + 6,
+            { centerX: x + (cell.width || 78) / 2 },
           );
         }
         continue;
@@ -694,30 +708,18 @@ export const convertMxGraphToExcalidraw = async (
               : vAlign === "bottom"
               ? Math.max(0, cell.height - textHeight)
               : 0;
-          skeletons.push({
-            type: "text",
-            id: elementIdOf(cell.id),
-            text: cell.label,
+          pushAnchoredText(
+            cell.label,
             x,
-            y: y + yOffset,
+            y + yOffset,
+            align === "center" && cell.width > 0
+              ? { centerX: x + cell.width / 2 }
+              : align === "right" && cell.width > 0
+              ? { rightX: x + cell.width }
+              : {},
             fontSize,
-            fontFamily: 2,
-            roughness: 0,
-            strokeColor: mapColor(style.get("fontColor"), "#1e1e1e"),
-            // honrar o alinhamento dentro da caixa original do draw.io
-            ...(cell.width > 0
-              ? {
-                  width: cell.width,
-                  autoResize: false,
-                  textAlign:
-                    align === "right"
-                      ? ("right" as const)
-                      : align === "center"
-                      ? ("center" as const)
-                      : ("left" as const),
-                }
-              : {}),
-          } as ExcalidrawElementSkeleton);
+            mapColor(style.get("fontColor"), "#1e1e1e"),
+          );
         }
         continue;
       }
@@ -886,39 +888,54 @@ export const convertMxGraphToExcalidraw = async (
           : {}),
       } as ExcalidrawElementSkeleton);
 
-      // rótulo como texto livre ancorado no segmento CENTRAL da rota —
-      // acima do segmento horizontal, à direita do vertical (como o draw.io);
-      // o rótulo vinculado do Excalidraw centraliza no bbox e cai sobre a
-      // linha e as legendas vizinhas em rotas em L/Z
+      // rótulo de aresta (veredito 28/08): âncora no primeiro segmento
+      // HORIZONTAL da rota (rótulo lê-se na horizontal; é onde o draw.io o
+      // põe), com CHIP de fundo branco atrás — o truque de legibilidade do
+      // labelBackgroundColor do draw.io. Sem segmento horizontal, fica à
+      // direita do segmento central vertical.
       if (edge.label) {
-        const segStart = route[Math.floor((route.length - 1) / 2)];
-        const segEnd = route[Math.floor((route.length - 1) / 2) + 1];
-        const midX = (segStart.x + segEnd.x) / 2 + pageOffsetX;
-        const midY = (segStart.y + segEnd.y) / 2;
-        const horizontal =
-          Math.abs(segEnd.x - segStart.x) >= Math.abs(segEnd.y - segStart.y);
-        if (horizontal) {
-          skeletons.push(
-            captionSkeleton(
-              edge.label,
-              midX,
-              midY -
-                ICON_LABEL_FONT_SIZE * 1.25 * edge.label.split("\n").length -
-                6,
-            ),
-          );
-        } else {
-          skeletons.push({
-            type: "text",
-            text: edge.label,
-            x: midX + 10,
-            y: midY - (ICON_LABEL_FONT_SIZE * 1.25) / 2,
-            fontSize: ICON_LABEL_FONT_SIZE,
-            fontFamily: 2,
-            roughness: 0,
-            strokeColor: "#1e1e1e",
-          });
-        }
+        const lines = edge.label.split("\n");
+        const longest = Math.max(...lines.map((line) => line.length));
+        const labelWidth = Math.max(longest * 7.5, 40);
+        const labelHeight = ICON_LABEL_FONT_SIZE * 1.25 * lines.length;
+
+        const segments = route
+          .slice(0, -1)
+          .map((p, i) => ({ a: p, b: route[i + 1] }));
+        const horizontalSeg = segments.find(
+          (s) =>
+            Math.abs(s.b.x - s.a.x) >= Math.abs(s.b.y - s.a.y) &&
+            Math.abs(s.b.x - s.a.x) >= 30,
+        );
+        const anchorSeg =
+          horizontalSeg ?? segments[Math.floor((segments.length - 1) / 2)];
+        const segMidX = (anchorSeg.a.x + anchorSeg.b.x) / 2 + pageOffsetX;
+        const segMidY = (anchorSeg.a.y + anchorSeg.b.y) / 2;
+
+        const labelX = horizontalSeg ? segMidX - labelWidth / 2 : segMidX + 10;
+        const labelY = horizontalSeg
+          ? segMidY - labelHeight - 6
+          : segMidY - labelHeight / 2;
+
+        const chipId = `mxchip_${labelSeq}`;
+        skeletons.push({
+          type: "rectangle",
+          id: chipId,
+          x: labelX - 4,
+          y: labelY - 2,
+          width: labelWidth + 8,
+          height: labelHeight + 4,
+          backgroundColor: "#ffffff",
+          fillStyle: "solid",
+          strokeColor: "transparent",
+          roughness: 0,
+        });
+        pushAnchoredText(
+          edge.label,
+          labelX,
+          labelY,
+          horizontalSeg ? { centerX: segMidX, chipId } : { chipId },
+        );
       }
     }
 
@@ -928,6 +945,32 @@ export const convertMxGraphToExcalidraw = async (
   const elements = convertToExcalidrawElements(skeletons, {
     regenerateIds: false,
   });
+
+  // posição definitiva dos textos com o width REAL medido pela fonte
+  // (o newTextElement recalcula o width; estimativas por caractere deslocam)
+  const byId = new Map(elements.map((el) => [el.id, el]));
+  for (const [id, anchor] of textAnchors) {
+    const textEl = byId.get(id);
+    if (!textEl) {
+      continue;
+    }
+    if (anchor.centerX !== undefined) {
+      Object.assign(textEl, { x: anchor.centerX - textEl.width / 2 });
+    } else if (anchor.rightX !== undefined) {
+      Object.assign(textEl, { x: anchor.rightX - textEl.width });
+    }
+    if (anchor.chipId) {
+      const chip = byId.get(anchor.chipId);
+      if (chip) {
+        Object.assign(chip, {
+          x: textEl.x - 4,
+          y: textEl.y - 2,
+          width: textEl.width + 8,
+          height: textEl.height + 4,
+        });
+      }
+    }
+  }
 
   if (elements.length === 0) {
     throw new Error("O diagrama não contém elementos conversíveis");
