@@ -474,7 +474,35 @@ const isTextCell = (cell: MxCell): boolean =>
 // ─── Conversão ───────────────────────────────────────────────────────────────
 
 const ICON_LABEL_FONT_SIZE = 12;
-const ICON_LABEL_CHAR_WIDTH = 7;
+
+/**
+ * Legenda centrada com exatidão: caixa de largura >= texto, centrada no
+ * ponto pedido, com textAlign center — o Excalidraw centraliza os glifos
+ * dentro da caixa, sem depender de estimativa de largura de fonte.
+ */
+const captionSkeleton = (
+  caption: string,
+  centerX: number,
+  topY: number,
+): ExcalidrawElementSkeleton => {
+  const longestLine = Math.max(
+    ...caption.split("\n").map((line) => line.length),
+  );
+  const width = Math.max(longestLine * 8, 100);
+  return {
+    type: "text",
+    text: caption,
+    x: centerX - width / 2,
+    y: topY,
+    width,
+    autoResize: false,
+    textAlign: "center",
+    fontSize: ICON_LABEL_FONT_SIZE,
+    fontFamily: 2,
+    roughness: 0,
+    strokeColor: "#1e1e1e",
+  } as ExcalidrawElementSkeleton;
+};
 
 export interface MxGraphConversionResult {
   elements: readonly ExcalidrawElement[];
@@ -587,18 +615,13 @@ export const convertMxGraphToExcalidraw = async (
           fileId,
         });
         if (cell.label) {
-          const captionWidth = cell.label.length * ICON_LABEL_CHAR_WIDTH;
-          skeletons.push({
-            type: "text",
-            text: cell.label,
-            x: x + (cell.width || 78) / 2 - captionWidth / 2,
-            y: y + (cell.height || 78) + 6,
-            fontSize: ICON_LABEL_FONT_SIZE,
-            fontFamily: 2,
-            roughness: 0,
-            textAlign: "center",
-            strokeColor: "#1e1e1e",
-          });
+          skeletons.push(
+            captionSkeleton(
+              cell.label,
+              x + (cell.width || 78) / 2,
+              y + (cell.height || 78) + 6,
+            ),
+          );
         }
         continue;
       }
@@ -648,18 +671,13 @@ export const convertMxGraphToExcalidraw = async (
         }
         const caption = cell.label || (icon ? icon.name : "");
         if (caption) {
-          const captionWidth = caption.length * ICON_LABEL_CHAR_WIDTH;
-          skeletons.push({
-            type: "text",
-            text: caption,
-            x: x + (cell.width || 78) / 2 - captionWidth / 2,
-            y: y + (cell.height || 78) + 6,
-            fontSize: ICON_LABEL_FONT_SIZE,
-            fontFamily: 2,
-            roughness: 0,
-            textAlign: "center",
-            strokeColor: "#1e1e1e",
-          });
+          skeletons.push(
+            captionSkeleton(
+              caption,
+              x + (cell.width || 78) / 2,
+              y + (cell.height || 78) + 6,
+            ),
+          );
         }
         continue;
       }
@@ -866,10 +884,42 @@ export const convertMxGraphToExcalidraw = async (
         ...(edge.style.get("dashed") === "1"
           ? { strokeStyle: "dashed" as const }
           : {}),
-        ...(edge.label
-          ? { label: { text: edge.label, fontSize: 12, fontFamily: 2 } }
-          : {}),
       } as ExcalidrawElementSkeleton);
+
+      // rótulo como texto livre ancorado no segmento CENTRAL da rota —
+      // acima do segmento horizontal, à direita do vertical (como o draw.io);
+      // o rótulo vinculado do Excalidraw centraliza no bbox e cai sobre a
+      // linha e as legendas vizinhas em rotas em L/Z
+      if (edge.label) {
+        const segStart = route[Math.floor((route.length - 1) / 2)];
+        const segEnd = route[Math.floor((route.length - 1) / 2) + 1];
+        const midX = (segStart.x + segEnd.x) / 2 + pageOffsetX;
+        const midY = (segStart.y + segEnd.y) / 2;
+        const horizontal =
+          Math.abs(segEnd.x - segStart.x) >= Math.abs(segEnd.y - segStart.y);
+        if (horizontal) {
+          skeletons.push(
+            captionSkeleton(
+              edge.label,
+              midX,
+              midY -
+                ICON_LABEL_FONT_SIZE * 1.25 * edge.label.split("\n").length -
+                6,
+            ),
+          );
+        } else {
+          skeletons.push({
+            type: "text",
+            text: edge.label,
+            x: midX + 10,
+            y: midY - (ICON_LABEL_FONT_SIZE * 1.25) / 2,
+            fontSize: ICON_LABEL_FONT_SIZE,
+            fontFamily: 2,
+            roughness: 0,
+            strokeColor: "#1e1e1e",
+          });
+        }
+      }
     }
 
     pageOffsetX += pageMaxX + 200;
