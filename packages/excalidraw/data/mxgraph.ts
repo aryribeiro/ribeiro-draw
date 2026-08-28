@@ -324,6 +324,11 @@ interface MxCell {
   relative: boolean;
 }
 
+// filho direto por tag, sem querySelector(":scope >") — ids do draw.io podem
+// começar com dígito e quebram seletores CSS em alguns ambientes
+const directChild = (node: Element, tagName: string): Element | null =>
+  Array.from(node.children).find((c) => c.tagName === tagName) ?? null;
+
 const readCells = (model: Element): Map<string, MxCell> => {
   const cells = new Map<string, MxCell>();
   for (const node of Array.from(model.querySelectorAll("mxCell"))) {
@@ -331,7 +336,7 @@ const readCells = (model: Element): Map<string, MxCell> => {
     if (!id || id === "0" || id === "1") {
       continue;
     }
-    const geometry = node.querySelector(":scope > mxGeometry");
+    const geometry = directChild(node, "mxGeometry");
     // células envelopadas (<object label=… id=…><mxCell…>) usam o pai como fonte
     const wrapper =
       node.parentElement && node.parentElement.tagName !== "root"
@@ -360,11 +365,11 @@ const readCells = (model: Element): Map<string, MxCell> => {
     model.querySelectorAll("object, UserObject"),
   )) {
     const id = wrapper.getAttribute("id");
-    const inner = wrapper.querySelector(":scope > mxCell");
+    const inner = directChild(wrapper, "mxCell");
     if (!id || !inner || cells.has(id)) {
       continue;
     }
-    const geometry = inner.querySelector(":scope > mxGeometry");
+    const geometry = directChild(inner, "mxGeometry");
     cells.set(id, {
       id,
       parent: inner.getAttribute("parent"),
