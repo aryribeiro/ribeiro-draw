@@ -1,27 +1,37 @@
 <p align="center">
   <img src="logo.png" alt="Ribeiro Draw!" width="320" />
 </p>
-<p align="center"><strong>Whiteboard colaborativo para diagramas de arquitetura AWS com estilo hand-drawn.</strong></p>
+<p align="center"><strong>Whiteboard colaborativo para diagramas de arquitetura cloud — abre e salva arquivos do draw.io.</strong></p>
 
-Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), customizado e otimizado para criação de diagramas de infraestrutura cloud AWS. Totalmente self-hosted, sem dependências de serviços externos.
+Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), otimizado para diagramas de infraestrutura cloud: **941 ícones** (810 oficiais AWS + 131 de marcas, redes e formas) e **interoperabilidade completa com o draw.io** — importa e exporta `.drawio`/`.xml` com fidelidade. Totalmente self-hosted, sem dependências de serviços externos.
 
 ---
 
 ## Recursos
 
-- **810 ícones oficiais AWS** inline (Architecture Service, Resource, Group e Category) — carregamento instantâneo, zero requests de rede
-- **Pack Tech com 131 ícones extras** — marcas e SaaS (GitHub, Vercel, Streamlit, Turso, Teams, WhatsApp, Meta, Facebook, Instagram, TikTok, Kwai, Netflix, Windows Server, Active Directory...), logos de cloud (Google Cloud, Azure, Oracle) ícones de redes de computadores (roteador, firewall, servidores, access point...) e figuras geométricas comuns (hexágono, estrela, nuvem, cilindro, balão de fala...) — carregado sob demanda, sem pesar o bundle inicial
-- **Painel lateral** com busca em tempo real, filtros por categoria e tabs por tipo de ícone
+### Ícones (941 no total)
+
+- **810 ícones oficiais AWS** inline (Architecture Service, Resource, Group e Category) — pacote oficial de julho/2026, carregamento instantâneo, zero requests de rede
+- **Pack Tech com 131 ícones extras** — marcas e SaaS (GitHub, Vercel, Streamlit, Turso, Teams, WhatsApp, Meta, Facebook, Instagram, TikTok, Kwai, Netflix, Windows Server, Active Directory...), logos de cloud (Google Cloud, Azure, Oracle), ícones de redes de computadores (roteador, firewall, servidores, access point...) e figuras geométricas comuns (hexágono, estrela, nuvem, cilindro, balão de fala...) — carregado sob demanda, sem pesar o bundle inicial
+- **Painel lateral** com busca em tempo real (AWS + Tech juntos), filtros por categoria e tabs por tipo de ícone; glifos pretos aparecem invertidos no painel escuro e entram no quadro na cor original
 - **Inserção via clique ou drag-and-drop** com nome do serviço exibido automaticamente como texto editável
 - **Grid virtualizado** — renderiza apenas os ícones visíveis na viewport para máxima performance
+
+### Interoperabilidade com draw.io e IAs
+
+- **Importa `.drawio` e `.xml`** — abra (`Ctrl+O`), arraste ou **cole o XML direto no canvas**; funciona com arquivos do app draw.io (inclusive comprimidos) e com os gerados por IAs (ChatGPT, Claude, Gemini...), reparando até XML malformado
+- **Importação fiel ao original** — ícones AWS re-mapeados para os oficiais do acervo, setas encostando na borda das formas com rotas ortogonais, conexões que continuam editáveis (seguem os elementos ao arrastar), textos e títulos na posição exata, rótulos de conexão com fundo branco, mesma tipografia
+- **Exporta `.drawio` e `.xml`** — o arquivo abre direto no draw.io, com formas, textos, conexões e ícones embutidos; ida e volta sem perdas (comprovado por testes com arquivos reais)
+- **Cole Mermaid direto no canvas** — flowcharts gerados por IA viram elementos editáveis
+
+### Plataforma
+
 - **100% independente** — nenhum dado enviado a terceiros (sem Sentry, Firebase, Google Fonts, Analytics)
 - **Local-first** — salva automaticamente no browser (localStorage + IndexedDB)
 - **Idioma padrão: Português Brasileiro** (100% traduzido) com suporte a 30+ idiomas
 - **PWA** — funciona offline após primeiro acesso
 - **Colaboração em tempo real** — via WebSocket (opcional, requer servidor próprio)
-- **Importa `.drawio` e `.xml`** — abra, arraste ou cole diagramas do draw.io e os gerados por IAs (ChatGPT, Claude, Gemini...); os ícones AWS do diagrama são re-mapeados para os oficiais e as ligações continuam editáveis
-- **Cole Mermaid direto no canvas** — flowcharts gerados por IA viram elementos editáveis
-- **Exportação** — PNG, SVG, clipboard, arquivo `.excalidraw`, **`.drawio` e `.xml`** (abre direto no draw.io, com ícones embutidos)
+- **Exportação de imagem** — PNG, SVG, clipboard e arquivo `.excalidraw`
 - **Canvas infinito** com zoom, pan, dark mode e estilo hand-drawn
 - **Deploy na Vercel** — build estático otimizado
 
@@ -53,6 +63,7 @@ ribeiro-draw/
 │   └── index.html           # Entry point
 ├── packages/
 │   ├── excalidraw/          # Core library (canvas, tools, UI)
+│   │   └── data/mxgraph*.ts # Importador e exportador draw.io/mxGraph
 │   ├── common/              # Constantes e utilitários compartilhados
 │   ├── element/             # Tipos e lógica de elementos
 │   ├── math/                # Geometria e cálculos
@@ -207,7 +218,15 @@ Basta conectar o repositório GitHub na Vercel. Não é necessário configurar v
 - **Exportar como imagem**: `Ctrl + Shift + E` (PNG ou SVG)
 - **Salvar arquivo**: `Ctrl + S` (formato `.excalidraw`)
 - **Abrir arquivo**: `Ctrl + O` (`.excalidraw`, `.drawio`, `.xml`, `.png`/`.svg` com cena)
+- **Salvar como .drawio ou .xml**: menu Exportar — o arquivo abre direto no draw.io
 - **Copiar para clipboard**: `Ctrl + Shift + C` (como PNG)
+
+### Trabalhar com arquivos do draw.io e de IAs
+
+1. **Abrir**: `Ctrl + O` e escolha um `.drawio` ou `.xml` — ou simplesmente arraste o arquivo para o canvas
+2. **Colar**: copie o XML que uma IA gerou (ChatGPT, Claude, Gemini...) e cole direto no canvas (`Ctrl + V`)
+3. Os ícones AWS chegam re-mapeados para os oficiais, as conexões continuam editáveis e os textos ficam onde o original os colocou
+4. **Salvar de volta**: menu Exportar → "Salvar .drawio" ou "Salvar .xml" — ida e volta sem perdas
 
 ### Dicas
 
