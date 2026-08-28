@@ -39,7 +39,12 @@ import { loadFromBlob } from "@excalidraw/excalidraw/data/blob";
 import { registerMxGraphAwsIcons } from "@excalidraw/excalidraw/data/mxgraph";
 import { t } from "@excalidraw/excalidraw/i18n";
 
-import { usersIcon, share } from "@excalidraw/excalidraw/components/icons";
+import {
+  usersIcon,
+  share,
+  pencilIcon,
+} from "@excalidraw/excalidraw/components/icons";
+import { applyHandDrawnStyle } from "@excalidraw/excalidraw/data/handDrawn";
 import { isElementLink } from "@excalidraw/element";
 import {
   bumpElementVersions,
@@ -1193,6 +1198,39 @@ const ExcalidrawWrapper = () => {
               ],
               perform: async () => {
                 setShareDialogState({ isOpen: true, type: "share" });
+              },
+            },
+            {
+              label: t("labels.applyHandDrawn"),
+              category: DEFAULT_CATEGORIES.elements,
+              predicate: true,
+              icon: pencilIcon,
+              keywords: [
+                "hand",
+                "drawn",
+                "sketch",
+                "ribeiro",
+                "estilo",
+                "rough",
+                "excalifont",
+              ],
+              perform: () => {
+                if (!excalidrawAPI) {
+                  return;
+                }
+                const appState = excalidrawAPI.getAppState();
+                const selectedIds = new Set(
+                  Object.entries(appState.selectedElementIds)
+                    .filter(([, isSelected]) => isSelected)
+                    .map(([id]) => id),
+                );
+                excalidrawAPI.updateScene({
+                  elements: applyHandDrawnStyle(
+                    excalidrawAPI.getSceneElements(),
+                    selectedIds.size > 0 ? selectedIds : undefined,
+                  ),
+                  captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+                });
               },
             },
             {

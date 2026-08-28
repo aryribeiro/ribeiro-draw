@@ -189,7 +189,8 @@
     "boxSelectionContain": "Envolver",
     "boxSelectionOverlap": "Sobrepor",
     "arrowBinding": "Vinculação de seta",
-    "midpointSnapping": "Encaixar em pontos médios"
+    "midpointSnapping": "Encaixar em pontos médios",
+    "applyHandDrawn": "Aplicar estilo hand-drawn"
   },
   "elementLink": {
     "title": "Link do elemento",

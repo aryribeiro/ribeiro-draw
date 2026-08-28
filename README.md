@@ -23,6 +23,7 @@ Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), oti
 - **Importação fiel ao original** — ícones AWS re-mapeados para os oficiais do acervo, setas encostando na borda das formas com rotas ortogonais, conexões que continuam editáveis (seguem os elementos ao arrastar), textos e títulos na posição exata, rótulos de conexão com fundo branco, mesma tipografia
 - **Exporta `.drawio` e `.xml`** — o arquivo abre direto no draw.io, com formas, textos, conexões e ícones embutidos; ida e volta sem perdas (comprovado por testes com arquivos reais)
 - **Cole Mermaid direto no canvas** — flowcharts gerados por IA viram elementos editáveis
+- **"Aplicar estilo hand-drawn" com 1 clique** (paleta `Ctrl + /`) — o diagrama importado troca para o visual esboçado da casa (traço à mão + fonte manuscrita), no quadro todo ou só na seleção; `Ctrl + Z` desfaz
 
 ### Plataforma
 
