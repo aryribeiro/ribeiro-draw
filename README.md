@@ -10,7 +10,8 @@ Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), cus
 ## Recursos
 
 - **810 ícones oficiais AWS** inline (Architecture Service, Resource, Group e Category) — carregamento instantâneo, zero requests de rede
-- **Painel lateral AWS** com busca em tempo real, filtros por categoria e tabs por tipo de ícone
+- **Pack Tech com 93 ícones extras** — marcas e SaaS (GitHub, Vercel, Streamlit, Turso, Kubernetes, Docker, Salesforce, SAP HANA, Microsoft 365, Zendesk...), logos de cloud (Google Cloud, Azure, Oracle) e ícones de redes de computadores (roteador, switch/LAN, firewall, servidores, access point...) — carregado sob demanda, sem pesar o bundle inicial
+- **Painel lateral** com busca em tempo real, filtros por categoria e tabs por tipo de ícone
 - **Inserção via clique ou drag-and-drop** com nome do serviço exibido automaticamente como texto editável
 - **Grid virtualizado** — renderiza apenas os ícones visíveis na viewport para máxima performance
 - **100% independente** — nenhum dado enviado a terceiros (sem Sentry, Firebase, Google Fonts, Analytics)
@@ -79,6 +80,17 @@ ribeiro-draw/
 
 Fonte: [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) — versão Julho 2026.
 
+## Pack Tech (tab "Tech" do painel)
+
+| Conjunto | Quantidade | Exemplos |
+| --- | --- | --- |
+| Marcas & SaaS | 48 | GitHub, Vercel, Streamlit, Turso, Kubernetes, Docker, Salesforce, SAP HANA, Microsoft 365, Zendesk, Slack, Stripe, Datadog, PostgreSQL, OpenAI, Anthropic... |
+| Cloud | 4 | Google Cloud, Microsoft Azure, Oracle, Microsoft 365 |
+| Redes | 41 | Roteador, Firewall, Servidor, Access Point, LAN, VPN, NAS, CCTV... |
+| **Total** | **93** | carregado sob demanda (chunk separado) |
+
+Fontes: [Simple Icons](https://simpleicons.org/) (CC0) para marcas — os logos pertencem aos respectivos donos e são usados nominativamente; [Material Design Icons / Pictogrammers](https://pictogrammers.com/library/mdi/) (Apache 2.0) para redes. Gerado por `scripts/generate-tech-manifest.mjs` a partir de `public/icons/Tech-Icons/`.
+
 ---
 
 ## Desenvolvimento Local
@@ -139,11 +151,11 @@ Basta conectar o repositório GitHub na Vercel. Não é necessário configurar v
 
 ## Guia Rápido de Uso
 
-### Inserir ícones AWS
+### Inserir ícones
 
-1. O painel lateral AWS abre automaticamente ao iniciar
-2. Use a **busca** para encontrar um serviço (ex.: "Lambda", "S3", "EC2")
-3. Navegue pelas **tabs**: Services, Resources, Groups, Categories
+1. O painel lateral abre automaticamente ao iniciar
+2. Use a **busca** para encontrar um serviço ou marca (ex.: "Lambda", "S3", "GitHub", "Roteador")
+3. Navegue pelas **tabs**: Serviços, Recursos, Grupos, Categorias e **Tech** (marcas, cloud e redes)
 4. Filtre por **categoria** usando os chips (Analytics, Compute, Database...)
 5. **Clique** no ícone para inserir no centro da tela, ou **arraste** para posicionar onde quiser
 6. O nome do serviço aparece automaticamente como texto editável abaixo do ícone

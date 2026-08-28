@@ -746,7 +746,8 @@
       "services": "Services",
       "resources": "Resources",
       "groups": "Groups",
-      "categories": "Categories"
+      "categories": "Categories",
+      "tech": "Tech"
     },
     "categories": {
       "all": "All",
