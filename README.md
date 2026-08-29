@@ -3,16 +3,16 @@
 </p>
 <p align="center"><strong>Whiteboard colaborativo para diagramas de arquitetura cloud — abre e salva arquivos do draw.io.</strong></p>
 
-Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), otimizado para diagramas de infraestrutura cloud: **991 ícones** (810 oficiais AWS + 181 de marcas, linguagens, segurança, redes e formas) e **interoperabilidade completa com o draw.io** — importa e exporta `.drawio`/`.xml` com fidelidade. Totalmente self-hosted, sem dependências de serviços externos.
+Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), otimizado para diagramas de infraestrutura cloud: **1.000 ícones** (810 oficiais AWS + 190 de marcas, linguagens, segurança, redes e formas) e **interoperabilidade completa com o draw.io** — importa e exporta `.drawio`/`.xml` com fidelidade. Totalmente self-hosted, sem dependências de serviços externos.
 
 ---
 
 ## Recursos
 
-### Ícones (991 no total)
+### Ícones (1.000 no total)
 
 - **810 ícones oficiais AWS** inline (Architecture Service, Resource, Group e Category) — pacote oficial de julho/2026, carregamento instantâneo, zero requests de rede
-- **Pack Tech com 181 ícones extras** — marcas, SaaS, CRMs/ERPs, linguagens de programação (Rust, Go, Java, C/C++/C#, PHP, Kotlin, Swift...), infra e cibersegurança (Cisco, Fortinet, Palo Alto, CrowdStrike, pfSense, Ubiquiti, MikroTik, Zabbix, Debian, Ubuntu...) e **Claude Code** (GitHub, Vercel, Kiro, TOTVS, Microsiga Protheus, Salesforce, HubSpot, Dynamics 365, SAP, Teams, WhatsApp, Meta, Facebook, Instagram, TikTok, Kwai, Netflix, Windows Server, Active Directory...), logos de cloud (Google Cloud, Azure, Oracle), ícones de redes de computadores (roteador, firewall, servidores, access point...) e figuras geométricas comuns (hexágono, estrela, nuvem, cilindro, balão de fala...) — carregado sob demanda, sem pesar o bundle inicial
+- **Pack Tech com 190 ícones extras** — marcas, SaaS, CRMs/ERPs, linguagens de programação (Rust, Go, Java, C/C++/C#, PHP, Kotlin, Swift...), infra e cibersegurança (Cisco, Fortinet, Palo Alto, CrowdStrike, pfSense, Ubiquiti, MikroTik, Zabbix, Debian, Ubuntu...) e **Claude Code** (GitHub, Vercel, Kiro, TOTVS, Microsiga Protheus, Salesforce, HubSpot, Dynamics 365, SAP, Teams, WhatsApp, Meta, Facebook, Instagram, TikTok, Kwai, Netflix, Windows Server, Active Directory...), logos de cloud (Google Cloud, Azure, Oracle), ícones de redes de computadores (roteador, firewall, servidores, access point...) e figuras geométricas comuns (hexágono, estrela, nuvem, cilindro, balão de fala...) — carregado sob demanda, sem pesar o bundle inicial
 - **Painel lateral** com busca em tempo real (AWS + Tech juntos), filtros por categoria e tabs por tipo de ícone; glifos pretos aparecem invertidos no painel escuro e entram no quadro na cor original
 - **Inserção via clique ou drag-and-drop** com nome do serviço exibido automaticamente como texto editável
 - **Grid virtualizado** — renderiza apenas os ícones visíveis na viewport para máxima performance
@@ -97,11 +97,11 @@ Fonte: [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/) — 
 
 | Conjunto | Quantidade | Exemplos |
 | --- | --- | --- |
-| Marcas & SaaS | 110 | GitHub, Vercel, Kiro, TOTVS, Microsiga Protheus, HubSpot, Dynamics 365, Zoho, Odoo, Sage, SAP HANA/S4HANA, Salesforce, Streamlit, Turso, Teams, WhatsApp, Meta, Instagram, TikTok, Kwai, Netflix, Windows Server, Active Directory, Kubernetes, Docker, Zendesk, Slack (colorido), Stripe, OpenAI, Anthropic, Rust, Go, Java, C/C++/C#, PHP, Ruby, Kotlin, Swift, Flutter, Angular, Laravel, Spring, Claude Code, Cisco, Fortinet, Palo Alto Networks, CrowdStrike, pfSense, Ubiquiti, MikroTik, Zabbix, Apache, Debian, Ubuntu, ServiceNow, Workday, Pipedrive, Lightspeed, RD Station... |
+| Marcas & SaaS | 119 | GitHub, Vercel, Kiro, TOTVS, Microsiga Protheus, HubSpot, Dynamics 365, Zoho, Odoo, Sage, SAP HANA/S4HANA, Salesforce, Streamlit, Turso, Teams, WhatsApp, Meta, Instagram, TikTok, Kwai, Netflix, Windows Server, Active Directory, Kubernetes, Docker, Zendesk, Slack (colorido), Stripe, OpenAI, Anthropic, Rust, Go, Java, C/C++/C#, PHP, Ruby, Kotlin, Swift, Flutter, Angular, Laravel, Spring, Claude Code, Cisco, Fortinet, Palo Alto Networks, CrowdStrike, pfSense, Ubiquiti, MikroTik, Zabbix, Apache, Debian, Ubuntu, ServiceNow, Workday, Pipedrive, Lightspeed, RD Station, Proxmox, Splunk, Wireshark, Grafana Loki, VMware ESXi, Kali Linux, WireGuard, Keycloak, Okta... |
 | Cloud | 4 | Google Cloud, Microsoft Azure, Oracle, Microsoft 365 |
 | Redes | 41 | Roteador, Firewall, Servidor, Access Point, LAN, VPN, NAS, CCTV... |
 | Formas | 26 | Hexágono, Triângulo, Estrela, Nuvem, Cilindro (BD), Balão de Fala, Documento, Cadeado, Engrenagem... |
-| **Total** | **181** | carregado sob demanda (chunk separado) |
+| **Total** | **190** | carregado sob demanda (chunk separado) |
 
 Fontes: [Simple Icons](https://simpleicons.org/) (CC0) e [Wikimedia Commons](https://commons.wikimedia.org/) (wordmarks) para marcas — os logos pertencem aos respectivos donos e são usados nominativamente; [Material Design Icons / Pictogrammers](https://pictogrammers.com/library/mdi/) (Apache 2.0) para redes. Gerado por `scripts/generate-tech-manifest.mjs` a partir de `public/icons/Tech-Icons/`.
 

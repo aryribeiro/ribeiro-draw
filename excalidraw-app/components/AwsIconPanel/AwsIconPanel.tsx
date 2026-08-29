@@ -95,6 +95,11 @@ const DARK_GLYPH_BRAND_IDS = new Set([
   "Tech_Brands_Next_js",
   "Tech_Brands_Anthropic",
   "Tech_Brands_Apache_Kafka",
+  "Tech_Brands_Splunk",
+  "Tech_Brands_pfSense",
+  "Tech_Brands_MikroTik",
+  "Tech_Brands_ServiceNow",
+  "Tech_Brands_Keycloak",
 ]);
 
 const isDarkGlyph = (iconId: string) =>
