@@ -19,7 +19,7 @@ Fork independente do [Excalidraw](https://github.com/excalidraw/excalidraw), oti
 
 ### Interoperabilidade com draw.io e IAs
 
-- **Importa `.drawio` e `.xml`** — abra (`Ctrl+O`), arraste ou **cole o XML direto no canvas**; funciona com arquivos do app draw.io (inclusive comprimidos) e com os gerados por IAs (ChatGPT, Claude, Gemini...), reparando até XML malformado
+- **Além de abrir `.excalidraw`, também abre `.drawio` e `.xml`** — abra (`Ctrl+O`), arraste ou **cole o XML direto no canvas**; funciona com arquivos do app draw.io (inclusive comprimidos) e com os gerados por IAs (ChatGPT, Claude, Gemini...), reparando até XML malformado
 - **Importação fiel ao original** — ícones AWS re-mapeados para os oficiais do acervo, setas encostando na borda das formas com rotas ortogonais, conexões que continuam editáveis (seguem os elementos ao arrastar), textos e títulos na posição exata, rótulos de conexão com fundo branco, mesma tipografia
 - **Exporta `.drawio` e `.xml`** — o arquivo abre direto no draw.io, com formas, textos, conexões e ícones embutidos; ida e volta sem perdas (comprovado por testes com arquivos reais)
 - **Cole Mermaid direto no canvas** — flowcharts gerados por IA viram elementos editáveis
